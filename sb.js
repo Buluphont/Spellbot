@@ -2,21 +2,50 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 var cr = require("./config.json");
-client.prefix = cr.prefix;
-client.login(cr.token);
+client.defaultPrefix = cr.prefix;
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+const Guild = require("./models/Guild");
 
+mongoose.connect("mongodb://localhost:27017/myproject");
 // This shit is used everywhere. Might as well make it global.
 client.random = function(low, high) {
 	return Math.floor(Math.random() * (high - low + 1) + low);
 };
 
-var COMMANDS = new Map();
-COMMANDS.set("ping", (msg) => {
-	msg.reply("Pong!");
+client.commands = new Map();
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error"));
+db.once("open", function() {
+	client.db = db;
+	client.login(cr.token);
+	console.log("Connected to db.");
 });
 
 client.once("ready", () => {
 	console.log(`Ready to begin! Serving in ${client.guilds.size} servers.`);
+	const dir = "./commands/";
+	const fs = require("fs");
+
+
+	fs.readdir(dir, (err, files) => {
+		if(err){
+			console.log(dir);
+			console.log(err);
+			process.exit(0);
+		}
+		else{
+			for(let i = 0; i < files.length; i++){
+				let fileName = files[i];
+				let mod = require(`./commands/${/(.*)\.js/.exec(fileName)[1]}`);
+				let cmd = new mod(client);
+				console.log(`Loaded command ${cmd.name}`);
+				client.commands.set(cmd.name, cmd);
+			}
+		}
+
+	});
 });
 
 client.on("disconnect", () => {
@@ -29,12 +58,15 @@ client.on("error", (error) => {
 	console.log(error);
 });
 
-client.on("message", (msg) => {
-	if(msg.content.startsWith(client.prefix)){
+client.on("message", async (msg) => {
+	let prefix = await client.fetchPrefix(msg.guild.id);
+	if(msg.content.startsWith(prefix)){
 		let command = msg.content.split(" ")[0].substring(1);
 		try{
-			if(COMMANDS.get(command.toLowerCase())){
-				COMMANDS.get(command.toLowerCase())(msg);
+			let pattern = new RegExp(`${prefix}${command}(.*)`);
+			let args = pattern.exec(msg.content)[1].trim().split(" ");
+			if(client.commands.get(command.toLowerCase())){
+				client.commands.get(command.toLowerCase()).execute(msg, args);
 			}
 		}
 		catch(err){
@@ -43,3 +75,20 @@ client.on("message", (msg) => {
 		}
 	}
 });
+
+client.fetchPrefix = async function(id){
+	if(client.db){
+		try{
+			let guild = await Guild.findOne({id: id});
+			if(guild){
+				return guild.prefix;
+			}
+			else{
+				return client.defaultPrefix;
+			}
+		}
+		catch(err){
+			throw new Error(err);
+		}
+	}
+};
