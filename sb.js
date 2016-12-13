@@ -58,19 +58,32 @@ client.on("error", (error) => {
 
 client.on("message", async (msg) => {
 	let prefix = await client.fetchPrefix(msg.guild.id);
+	let offset;
 	if(msg.content.startsWith(prefix)){
-		let command = client.commands.get(msg.content.split(" ")[0].substring(1).toLowerCase());
-		try{
-			let pattern = new RegExp(`${prefix}${command}(.*)`);
-			let args = pattern.exec(msg.content)[1].trim().split(" ");
-			if(command && command.checkPermission(msg.member)){
-				command.execute(msg, args);
-			}
+		offset = prefix.length;
+	}
+	else if(msg.content.startsWith(client.user.toString())){
+		offset = client.user.toString().length + 1;
+	}
+	else{
+		return;
+	}
+
+	let commandString = msg.content.substring(offset).split(" ")[0].toLowerCase();
+	let command = client.commands.get(commandString);
+	try{
+		let pattern = new RegExp(`${command.name}(.*)`);
+		let args = pattern.exec(msg.content.substring(offset + commandString))[1].trim();
+		if(args){
+			args = args.split(" ");
 		}
-		catch(err){
-			console.log("Error onMessage:");
-			console.log(err);
+		if(command && await command.checkPermission(msg.member)){
+			command.execute(msg, args);
 		}
+	}
+	catch(err){
+		console.log("Error onMessage:");
+		console.log(err);
 	}
 });
 
@@ -79,9 +92,10 @@ client.fetchPrefix = async function(id){
 		try{
 			let guild = await Guild.findOne({id: id});
 			if(guild){
-				return guild.prefix;
+				return guild.prefix || client.defaultPrefix;
 			}
 			else{
+				await new Guild({id: id, prefix: client.defaultPrefix, elevatedRoles: []}).save();
 				return client.defaultPrefix;
 			}
 		}

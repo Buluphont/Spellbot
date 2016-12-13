@@ -13,15 +13,11 @@ module.exports = class Help extends Command{
 		let categories = new Map();
 		let prefix = await this.client.fetchPrefix(msg.guild.id);
 		this.client.commands.forEach((command) => {
-			console.log(command.name);
-			console.log(command.category);
-			console.log(command.help);
 			if(command.category && command.help){
 				if(!categories.get(command.category)){
 					categories.set(command.category, {name: command.category, helptext: []});
 				}
-				categories.get(command.category).helptext.push(`${prefix}${command.name} :: ${command.help}`);
-				console.log(`${prefix}${command.name}${command.args ? " " + command.helpArgs : ""} :: ${command.help}`);
+				categories.get(command.category).helptext.push(`${prefix}${command.name}${command.helpArgs ? " " + command.helpArgs : ""} :: ${command.help}`);
 			}
 		});
 
