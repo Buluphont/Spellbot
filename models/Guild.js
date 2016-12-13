@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
 var schema = new mongoose.Schema({
-	id: "string",
-	prefix: "string"
+	id: String,
+	prefix: String,
+	elevatedRoles: [String]
 });
 
 module.exports = mongoose.model("Guild", schema);

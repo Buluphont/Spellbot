@@ -21,7 +21,7 @@ module.exports = class Help extends Command{
 					categories.set(command.category, {name: command.category, helptext: []});
 				}
 				categories.get(command.category).helptext.push(`${prefix}${command.name} :: ${command.help}`);
-				console.log(`${prefix}${command.name} :: ${command.help}`);
+				console.log(`${prefix}${command.name}${command.args ? " " + command.helpArgs : ""} :: ${command.help}`);
 			}
 		});
 

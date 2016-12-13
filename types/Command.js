@@ -14,10 +14,34 @@ class Command{
 		this.name = meta.name;
 		this.category = meta.category;
 		this.help = meta.help;
+		this.elevation = meta.elevation || 0;
+		this.helpArgs = meta.helpArgs;
 	}
 
 	async execute(msg){ // eslint-disable-line no-unused-vars
 		throw new Error(`Virtual method 'execute' not implemented in command ${this.meta.name}`);
+	}
+
+	async checkPermission(member){
+		if(this.elevation && this.elevation > 0){
+			switch(this.elevation){
+				case 3:
+					return member.id === this.client.botOwnerID;
+				case 2:
+					return member.id === member.guild.ownerID;
+				case 1: {
+					if(member.id === member.guild.ownerID){
+						return true;
+					}
+					let elevatedRole = await this.client.fetchElevatedRole(member.guild.id);
+					return member.roles.get(elevatedRole.id);
+				}
+				case 0:
+					return true;
+				default:
+					return true;
+			}
+		}
 	}
 }
 

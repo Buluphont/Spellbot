@@ -24,10 +24,8 @@ db.once("open", function() {
 });
 
 client.once("ready", () => {
-	console.log(`Ready to begin! Serving in ${client.guilds.size} servers.`);
 	const dir = "./commands/";
 	const fs = require("fs");
-
 
 	fs.readdir(dir, (err, files) => {
 		if(err){
@@ -44,8 +42,8 @@ client.once("ready", () => {
 				client.commands.set(cmd.name, cmd);
 			}
 		}
-
 	});
+	console.log(`Ready to begin! Serving in ${client.guilds.size} servers.`);
 });
 
 client.on("disconnect", () => {
@@ -61,12 +59,12 @@ client.on("error", (error) => {
 client.on("message", async (msg) => {
 	let prefix = await client.fetchPrefix(msg.guild.id);
 	if(msg.content.startsWith(prefix)){
-		let command = msg.content.split(" ")[0].substring(1);
+		let command = client.commands.get(msg.content.split(" ")[0].substring(1).toLowerCase());
 		try{
 			let pattern = new RegExp(`${prefix}${command}(.*)`);
 			let args = pattern.exec(msg.content)[1].trim().split(" ");
-			if(client.commands.get(command.toLowerCase())){
-				client.commands.get(command.toLowerCase()).execute(msg, args);
+			if(command && command.checkPermission(msg.member)){
+				command.execute(msg, args);
 			}
 		}
 		catch(err){
