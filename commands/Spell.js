@@ -1,4 +1,5 @@
 const Command = require("../types/Command");
+const Discord = require("discord.js");
 const SpellModel = require("../models/Spell");
 const request = require("request");
 const cheerio = require("cheerio");
@@ -92,7 +93,17 @@ module.exports = class Spell extends Command{
 			result = spells[0];
 		}
 
-		console.log(result);
+		toEdit.edit("", {embed: new Discord.RichEmbed()
+			.setTitle(`__**${result.name}**__`)
+		.setDescription(`*${result.type}*
+		**Casting Time**: ${result.castingTime}
+		**Range**: ${result.range}
+		**Components**: ${result.components}
+		**Duration**: ${result.duration}`)
+		.setColor(0x97ff43)
+		.setURL(result.url)
+		.addField("Description", result.description.trim().replace("\n", "\n\n").trim())});
+ /*
 		toEdit.edit("", {embed: {
 			title: `__**${result.name}**__`,
 			description: `*${result.type}*
@@ -108,6 +119,7 @@ module.exports = class Spell extends Command{
 				inline: false
 			}]
 		}});
+		*/
 		//let toSend = [];
 		/*
 		toSend.push("```asciidoc");
