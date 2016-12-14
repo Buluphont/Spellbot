@@ -1,0 +1,6 @@
+{
+    "db_endpoint" : "MONGODB-ENDPOINT-HERE",
+	"token" : "BOT-TOKEN-HERE",
+	"ownerID" : "YOUR-ID-HERE",
+	"prefix" : "!"
+}
