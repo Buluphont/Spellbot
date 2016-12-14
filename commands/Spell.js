@@ -93,6 +93,7 @@ module.exports = class Spell extends Command{
 			result = spells[0];
 		}
 
+		console.log(result);
 		let descFieldValues = [];
 		let paragraphs = result.description.trim().split("\n");
 		paragraphs.forEach(p => {
