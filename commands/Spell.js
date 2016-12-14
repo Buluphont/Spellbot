@@ -11,7 +11,7 @@ module.exports = class Spell extends Command{
 		super(client, {
 			name: "spell",
 			category: "5e",
-			help: "Searches for a spell.",
+			help: "Searches for a spell by name.",
 			helpArgs: "<Spell Name>",
 			elevation: 0
 		});
@@ -69,10 +69,10 @@ module.exports = class Spell extends Command{
 		}
 		else if(spells.length > 1){
 			let toSend = [];
-			toSend.push("Found multiple spells; please specify which spell you meant (only first 10 results shown).");
-			spells.forEach((spell, i) => {
-				toSend.push(`${i + 1}. ${spell.name}`);
-			});
+			toSend.push("Found multiple spells; please specify which spell you meant (maximum 10 results shown).");
+			for(let i = 0; i < spells.length && i < 10; i++){
+				toSend.push(`${i + 1}. ${spells[i].name}`);
+			}
 			toEdit = await toEdit.edit(toSend);
 			let filter = (m) => {
 				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= spells.length;
@@ -88,7 +88,6 @@ module.exports = class Spell extends Command{
 				console.log(err);
 				return toEdit.edit("Query cancelled.");
 			}
-
 		}
 		else{
 			result = spells[0];
@@ -102,15 +101,14 @@ module.exports = class Spell extends Command{
 				descFieldValues.push(p);
 			}
 		});
-		let embed = new Discord.RichEmbed()
-			.setTitle(`__**${result.name}**__`)
-		.setDescription(`*${result.type}*
-		**Casting Time**: ${result.castingTime}
-		**Range**: ${result.range}
-		**Components**: ${result.components}
-		**Duration**: ${result.duration}`)
-		.setColor(0x97ff43)
-		.setURL(result.url);
+		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
+											.setDescription(`*${result.type}*
+											**Casting Time**: ${result.castingTime}
+											**Range**: ${result.range}
+											**Components**: ${result.components}
+											**Duration**: ${result.duration}`)
+											.setColor(0x97ff43)
+											.setURL(result.url);
 
 		descFieldValues.forEach((p, i) => {
 			if(i == 0){
@@ -121,7 +119,7 @@ module.exports = class Spell extends Command{
 			}
 		});
 
-		toEdit.edit("", {embed: embed});
+		return toEdit.edit("", {embed: embed});
  /*
 		toEdit.edit("", {embed: {
 			title: `__**${result.name}**__`,
