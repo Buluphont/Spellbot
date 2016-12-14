@@ -77,7 +77,11 @@ client.on("message", async (msg) => {
 		if(args){
 			args = args.split(" ");
 		}
-		if(command && await command.checkPermission(msg.member)){
+		if(command){
+			let hasPerm = await command.checkPermission(msg.member);
+			if(!hasPerm){
+				return msg.reply("you don't have permission to execute that command.");
+			}
 			command.execute(msg, args);
 		}
 	}
