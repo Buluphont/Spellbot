@@ -92,7 +92,7 @@ module.exports = class Spell extends Command{
 			result = spells[0];
 		}
 
-
+		console.log(result);
 		toEdit.edit("", {embed: {
 			title: `__**${result.name}**__`,
 			description: `*${result.type}*
