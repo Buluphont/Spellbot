@@ -12,6 +12,41 @@ module.exports = class Creature extends Command{
 			helpArgs: "<Creature Name>",
 			elevation: 0
 		});
+
+		this._attachFieldToEmbed = function(name, data, embed){
+			embed = embed.addField("\u200b", `__**${name}**__`);
+			data.forEach((element) => {
+				if(element.text.length + (element.attack ? element.attack.length : 0) > 1024){
+					let text = element.text;
+					text = text.concat(`${element.attack ? "\n**" + element.attack + "**" : ""}`);
+					let stringBuilder = [];
+
+					while(text.length > 1024){
+						let splitIndex = text.lastIndexOf("\n", 1024);
+						stringBuilder.push(text.substring(0, splitIndex));
+						text = text.substring(splitIndex + 1);
+					}
+					stringBuilder.push(text);
+					embed = embed.addField(element.name, stringBuilder.shift());
+					stringBuilder.forEach((string) => {
+						embed = embed.addField(`${element.name}, continued. . .`, `${string}${element.attack ? "\n**" + element.attack + "**" : ""}`);
+					});
+				}
+				else if(element.text.length + (element.attack ? element.attack.length : 0) > 0){
+					embed = embed.addField(element.name, `${element.text}${element.attack ? "\n**" + element.attack + "**" : ""}`);
+				}
+			});
+			return embed;
+		};
+		this._getModifierFor = function(attribute){
+			let modifier = Math.floor(parseInt(attribute) / 2) - 5;
+			if(modifier >= 0){
+				return `+${modifier}`;
+			}
+			else{
+				return `${modifier}`; // Integer to string conversion
+			}
+		};
 		this._crToExp = function(cr){
 			switch(cr){
 				case "0":
@@ -116,12 +151,12 @@ module.exports = class Creature extends Command{
 		description.push(`*${result.size} ${result.type} // ${result.alignment}*\n`);
 		description.push(`**Armor Class** ${result.ac}\n**Hit Points** ${result.hp}\n**Speed** ${result.speed}\n`);
 		let attributes = [];
-		attributes.push(`**STR** ${result.str} (${Math.floor(parseInt(result.str) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.str) / 2) - 5})`);
-		attributes.push(`**DEX** ${result.dex} (${Math.floor(parseInt(result.dex) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.dex) / 2) - 5})`);
-		attributes.push(`**CON** ${result.con} (${Math.floor(parseInt(result.con) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.con) / 2) - 5})`);
-		attributes.push(`**INT** ${result.int} (${Math.floor(parseInt(result.int) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.int) / 2) - 5})`);
-		attributes.push(`**WIS** ${result.wis} (${Math.floor(parseInt(result.wis) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.wis) / 2) - 5})`);
-		attributes.push(`**CHA** ${result.cha} (${Math.floor(parseInt(result.cha) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.cha) / 2) - 5})`);
+		attributes.push(`**STR** ${result.str} (${this._getModifierFor(result.str)})`);
+		attributes.push(`**DEX** ${result.dex} (${this._getModifierFor(result.dex)})`);
+		attributes.push(`**CON** ${result.con} (${this._getModifierFor(result.con)})`);
+		attributes.push(`**INT** ${result.int} (${this._getModifierFor(result.int)})`);
+		attributes.push(`**WIS** ${result.wis} (${this._getModifierFor(result.wis)})`);
+		attributes.push(`**CHA** ${result.cha} (${this._getModifierFor(result.cha)})`);
 		description.push(attributes.join("; "));
 		if(result.saves){
 			description.push(`**Saving Throws** ${result.saves}`);
@@ -153,83 +188,19 @@ module.exports = class Creature extends Command{
 
 		// Attach trait fields
 		if(result.traits && result.traits.length > 0){
-			embed = embed.addField("\u200b", "__**Traits**__");
-			result.traits.forEach((trait) => {
-				if(trait.text.length + (trait.attack ? trait.attack.length : 0) > 1024){
-					let text = trait.text;
-					text = text.concat(`${trait.attack ? "\n**" + trait.attack + "**" : ""}`);
-					let stringBuilder = [];
-
-					while(text.length > 1024){
-						let splitIndex = text.lastIndexOf("\n", 1024);
-						stringBuilder.push(text.substring(0, splitIndex));
-						text = text.substring(splitIndex + 1);
-					}
-					stringBuilder.push(text);
-					embed = embed.addField(trait.name, stringBuilder.shift());
-					stringBuilder.forEach((string) => {
-						embed = embed.addField(`${trait.name} continued. . .`, `${string}${trait.attack ? "\n**" + trait.attack + "**" : ""}`);
-					});
-				}
-				else if(trait.text.length + (trait.attack ? trait.attack.length : 0) > 0){
-					embed = embed.addField(trait.name, `${trait.text}${trait.attack ? "\n**" + trait.attack + "**" : ""}`);
-				}
-			});
+			embed = this._attachFieldToEmbed("Traits", result.traits, embed);
 		}
 
 		if(result.spells){
 			embed = embed.addField("Known Spells", result.spells);
 		}
 
-		// Attach action fields
 		if(result.actions && result.actions.length > 0){
-			embed = embed.addField("\u200b", "__**Actions**__");
-			result.actions.forEach((action) => {
-				if(action.text.length + (action.attack ? action.attack.length : 0) > 1024){
-					let text = action.text;
-					text = text.concat(`${action.attack ? "\n**" + action.attack + "**" : ""}`);
-					let stringBuilder = [];
-					while(text.length > 1024){
-						let splitIndex = text.lastIndexOf("\n", 1024);
-						stringBuilder.push(text.substring(0, splitIndex));
-						text = text.substring(splitIndex + 1);
-					}
-					stringBuilder.push(text);
-					embed = embed.addField(action.name, stringBuilder.shift());
-					stringBuilder.forEach((string) => {
-						embed = embed.addField(`${action.name} continued. . .`, string);
-					});
-				}
-				else if(action.text.length + (action.attack ? action.attack.length : 0) > 0){
-					embed = embed.addField(action.name, `${action.text}${action.attack ? "\n**" + action.attack + "**" : ""}`);
-				}
-			});
+			embed = this._attachFieldToEmbed("Actions", result.actions, embed);
 		}
 
 		if(result.legendary && result.legendary.length > 0){
-			embed = embed.addField("\u200b", "__**Legendary Actions**__");
-			result.legendary.forEach((legendary) => {
-				if(legendary.text.length + (legendary.attack ? legendary.attack.length : 0) > 1024){
-					let text = legendary.text;
-					text = text.concat(`${legendary.attack ? "\n**" + legendary.attack + "**" : ""}`);
-					let stringBuilder = [];
-
-					while(text.length > 1024){
-						let splitIndex = text.lastIndexOf("\n", 1024);
-						stringBuilder.push(text.substring(0, splitIndex));
-						text = text.substring(splitIndex + 1);
-					}
-
-					stringBuilder.push(text);
-					embed = embed.addField(legendary.name, stringBuilder.shift());
-					stringBuilder.forEach((string) => {
-						embed = embed.addField(`${legendary.name} continued. . .`, `${string}${legendary.attack ? "\n**" + legendary.attack + "**" : ""}`);
-					});
-				}
-				else if(legendary.text.length + (legendary.attack ? legendary.attack.length : 0) > 0){
-					embed = embed.addField(legendary.name, `${legendary.text}${legendary.attack ? "\n**" + legendary.attack + "**" : ""}`);
-				}
-			});
+			embed = this._attachFieldToEmbed("Legendary Actions", result.legendary, embed);
 		}
 
 		return toEdit.edit("", {embed: embed});
