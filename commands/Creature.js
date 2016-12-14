@@ -118,11 +118,11 @@ module.exports = class Creature extends Command{
 		description.push(`**Armor Class** ${result.ac}\n**Hit Points** ${result.hp}\n**Speed** ${result.speed}\n`);
 		let attributes = [];
 		attributes.push(`**STR** ${result.str} (${Math.floor(parseInt(result.str) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.str) / 2) - 5})`);
-		attributes.push(`**DEX** ${result.str} (${Math.floor(parseInt(result.dex) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.dex) / 2) - 5})`);
-		attributes.push(`**CON** ${result.str} (${Math.floor(parseInt(result.con) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.con) / 2) - 5})`);
-		attributes.push(`**INT** ${result.str} (${Math.floor(parseInt(result.int) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.int) / 2) - 5})`);
-		attributes.push(`**WIS** ${result.str} (${Math.floor(parseInt(result.wis) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.wis) / 2) - 5})`);
-		attributes.push(`**CHA** ${result.str} (${Math.floor(parseInt(result.cha) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.cha) / 2) - 5})`);
+		attributes.push(`**DEX** ${result.dex} (${Math.floor(parseInt(result.dex) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.dex) / 2) - 5})`);
+		attributes.push(`**CON** ${result.con} (${Math.floor(parseInt(result.con) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.con) / 2) - 5})`);
+		attributes.push(`**INT** ${result.int} (${Math.floor(parseInt(result.int) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.int) / 2) - 5})`);
+		attributes.push(`**WIS** ${result.wis} (${Math.floor(parseInt(result.wis) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.wis) / 2) - 5})`);
+		attributes.push(`**CHA** ${result.cha} (${Math.floor(parseInt(result.cha) / 2) - 5 >= 0 ? "+" : ""}${Math.floor(parseInt(result.cha) / 2) - 5})`);
 		description.push(attributes.join("; "));
 		if(result.saves){
 			description.push(`**Saving Throws** ${result.saves}`);

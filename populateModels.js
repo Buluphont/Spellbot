@@ -15,7 +15,7 @@ compendiums.set("bestiary", "./assets/5e/Bestiary Compendium 2.0.1.xml");
 db.once("open", function() {
 	console.log("Connected to db.");
 	console.log("Dropping bestiary.");
-	Creature.remove({}, function(err) {
+	Creature.remove({}, function(err) { // eslint-disable-line
 		console.log("Bestiary removed");
 		insertBestiary();
 	});
