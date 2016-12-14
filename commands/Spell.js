@@ -93,7 +93,12 @@ module.exports = class Spell extends Command{
 			result = spells[0];
 		}
 
-		toEdit.edit("", {embed: new Discord.RichEmbed()
+		let descFieldValues = [];
+		let paragraphs = result.description.trim().split("\n");
+		paragraphs.forEach(p => {
+			descFieldValues.push(p);
+		});
+		let embed = new Discord.RichEmbed()
 			.setTitle(`__**${result.name}**__`)
 		.setDescription(`*${result.type}*
 		**Casting Time**: ${result.castingTime}
@@ -101,8 +106,18 @@ module.exports = class Spell extends Command{
 		**Components**: ${result.components}
 		**Duration**: ${result.duration}`)
 		.setColor(0x97ff43)
-		.setURL(result.url)
-		.addField("Description", result.description.trim().replace("\n", "\n\n").trim())});
+		.setURL(result.url);
+
+		descFieldValues.forEach((p, i) => {
+			if(i == 0){
+				embed = embed.addField("Description", p.trim());
+			}
+			else{
+				embed = embed.addField("\u200b", p.trim());
+			}
+		});
+
+		toEdit.edit("", {embed: embed});
  /*
 		toEdit.edit("", {embed: {
 			title: `__**${result.name}**__`,
