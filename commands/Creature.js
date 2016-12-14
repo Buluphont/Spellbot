@@ -112,7 +112,6 @@ module.exports = class Creature extends Command{
 			result = creatures[0];
 		}
 
-		console.log(result);
 		let description = [];
 		description.push(`*${result.size} ${result.type} // ${result.alignment}*\n`);
 		description.push(`**Armor Class** ${result.ac}\n**Hit Points** ${result.hp}\n**Speed** ${result.speed}\n`);
@@ -152,10 +151,29 @@ module.exports = class Creature extends Command{
 											.setColor(0x97ff43)
 											.setDescription(description.join("\n"));
 
+		// Attach trait fields
 		if(result.traits && result.traits.length > 0){
 			embed = embed.addField("\u200b", "__**Traits**__");
 			result.traits.forEach((trait) => {
-				embed = embed.addField(trait.name, `${trait.text}${trait.attack ? "\n**" + trait.attack + "**" : ""}`);
+				if(trait.text.length + (trait.attack ? trait.attack.length : 0) > 1024){
+					let text = trait.text;
+					text = text.concat(`${trait.attack ? "\n**" + trait.attack + "**" : ""}`);
+					let stringBuilder = [];
+
+					while(text.length > 1024){
+						let splitIndex = text.lastIndexOf("\n", 1024);
+						stringBuilder.push(text.substring(0, splitIndex));
+						text = text.substring(splitIndex + 1);
+					}
+					stringBuilder.push(text);
+					embed = embed.addField(trait.name, stringBuilder.shift());
+					stringBuilder.forEach((string) => {
+						embed = embed.addField(`${trait.name} continued. . .`, `${string}${trait.attack ? "\n**" + trait.attack + "**" : ""}`);
+					});
+				}
+				else if(trait.text.length + (trait.attack ? trait.attack.length : 0) > 0){
+					embed = embed.addField(trait.name, `${trait.text}${trait.attack ? "\n**" + trait.attack + "**" : ""}`);
+				}
 			});
 		}
 
@@ -163,17 +181,54 @@ module.exports = class Creature extends Command{
 			embed = embed.addField("Known Spells", result.spells);
 		}
 
+		// Attach action fields
 		if(result.actions && result.actions.length > 0){
 			embed = embed.addField("\u200b", "__**Actions**__");
 			result.actions.forEach((action) => {
-				embed = embed.addField(action.name, `${action.text}${action.attack ? "\n**" + action.attack + "**": ""}`);
+				if(action.text.length + (action.attack ? action.attack.length : 0) > 1024){
+					let text = action.text;
+					text = text.concat(`${action.attack ? "\n**" + action.attack + "**" : ""}`);
+					let stringBuilder = [];
+					while(text.length > 1024){
+						let splitIndex = text.lastIndexOf("\n", 1024);
+						stringBuilder.push(text.substring(0, splitIndex));
+						text = text.substring(splitIndex + 1);
+					}
+					stringBuilder.push(text);
+					embed = embed.addField(action.name, stringBuilder.shift());
+					stringBuilder.forEach((string) => {
+						embed = embed.addField(`${action.name} continued. . .`, string);
+					});
+				}
+				else if(action.text.length + (action.attack ? action.attack.length : 0) > 0){
+					embed = embed.addField(action.name, `${action.text}${action.attack ? "\n**" + action.attack + "**" : ""}`);
+				}
 			});
 		}
 
 		if(result.legendary && result.legendary.length > 0){
 			embed = embed.addField("\u200b", "__**Legendary Actions**__");
 			result.legendary.forEach((legendary) => {
-				embed = embed.addField(legendary.name, `${legendary.text}${legendary.attack ? "\n**" + legendary.attack + "**": ""}`);
+				if(legendary.text.length + (legendary.attack ? legendary.attack.length : 0) > 1024){
+					let text = legendary.text;
+					text = text.concat(`${legendary.attack ? "\n**" + legendary.attack + "**" : ""}`);
+					let stringBuilder = [];
+
+					while(text.length > 1024){
+						let splitIndex = text.lastIndexOf("\n", 1024);
+						stringBuilder.push(text.substring(0, splitIndex));
+						text = text.substring(splitIndex + 1);
+					}
+
+					stringBuilder.push(text);
+					embed = embed.addField(legendary.name, stringBuilder.shift());
+					stringBuilder.forEach((string) => {
+						embed = embed.addField(`${legendary.name} continued. . .`, `${string}${legendary.attack ? "\n**" + legendary.attack + "**" : ""}`);
+					});
+				}
+				else if(legendary.text.length + (legendary.attack ? legendary.attack.length : 0) > 0){
+					embed = embed.addField(legendary.name, `${legendary.text}${legendary.attack ? "\n**" + legendary.attack + "**" : ""}`);
+				}
 			});
 		}
 
