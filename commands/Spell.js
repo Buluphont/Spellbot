@@ -35,7 +35,7 @@ module.exports = class Spell extends Command{
 								let data = $(this);
 								let article = data.text();
 								let matches = /\s*(.*)\s*Casting Time: (.*)Range: (.*)Components: (.*)Duration: (.*)\n([\w\W\s\S]*)/.exec(article);
-								if(!matches[1] || !matches[2] || !matches[3] || !matches[4] || !matches[5]){
+								if(!matches || !matches[1] || !matches[2] || !matches[3] || !matches[4] || !matches[5]){
 									reject("Page malformed. Please tell my creator!");
 								}
 								tentativeSpell.type = matches[1];
