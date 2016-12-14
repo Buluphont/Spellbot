@@ -63,7 +63,7 @@ module.exports = class Spell extends Command{
 				});
 			}
 			catch(err){
-				toEdit.edit(err);
+				return toEdit.edit(err);
 			}
 		}
 		else if(spells.length > 1){
