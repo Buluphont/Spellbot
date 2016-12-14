@@ -97,7 +97,9 @@ module.exports = class Spell extends Command{
 		let descFieldValues = [];
 		let paragraphs = result.description.trim().split("\n");
 		paragraphs.forEach(p => {
-			descFieldValues.push(p);
+			if(p && p.length > 0){
+				descFieldValues.push(p);
+			}
 		});
 		let embed = new Discord.RichEmbed()
 			.setTitle(`__**${result.name}**__`)
