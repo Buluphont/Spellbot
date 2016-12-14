@@ -71,13 +71,11 @@ module.exports = class Spell extends Command{
 			spells.forEach((spell, i) => {
 				toSend.push(`${i + 1}. ${spell.name}`);
 			});
-			console.log(toSend);
 			toEdit = await toEdit.edit(toSend);
 			let filter = (m) => {
 				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= spells.length;
 			};
 			try{
-				console.log("setting filter");
 				let selection = await toEdit.channel.awaitMessages(filter, {
 					time: TIMEOUT,
 					maxMatches: 1

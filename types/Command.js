@@ -32,16 +32,12 @@ class Command{
 				if(member.id === member.guild.ownerID){
 					return true;
 				}
-				console.log("Case 1");
 				let elevatedRoleIDs = await this.client.fetchElevatedRoleIDs(member.guild.id);
-				console.log(elevatedRoleIDs);
 				elevatedRoleIDs.forEach(r => {
 					if(member.roles.get(r)){
-						console.log("Found a match");
 						return true;
 					}
 				});
-				console.log("No match");
 				return false;
 			}
 			case 0:
