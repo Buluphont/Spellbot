@@ -6,7 +6,7 @@ module.exports = class Demote extends Command{
 			name: "demote",
 			category: "Admin",
 			help: "Demotes a role.",
-			helpArgs: "<roleID>",
+			helpArgs: "<Role Name>",
 			elevation: 2
 		});
 	}
@@ -30,7 +30,7 @@ module.exports = class Demote extends Command{
 			}
 		}
 		else{
-			return msg.reply("I was unable to find a role with that ID.");
+			return msg.reply("I was unable to find a role with that name.");
 		}
 	}
 };

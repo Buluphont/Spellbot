@@ -2,7 +2,7 @@
   "name": "Spellbot",
   "version": "1.0.0",
   "description": "A D&D 5e spell fetcher for Discord, running on Discord.js.",
-  "main": "nc.js",
+  "main": "sb.js",
   "scripts": {
     "start": "node --harmony sb.js"
   },
@@ -11,7 +11,9 @@
     "discord.js": "hydrabolt/discord.js#indev",
     "js-beautify": "^1.6.0",
     "mongodb": "^2.2.10",
-	"mongoose": "*"
+	"mongoose": "^4.7.2",
+	"request": "^2.79.0",
+	"cheerio": "^0.22.0"
   },
   "engines": {
     "node": ">=7.0.0"

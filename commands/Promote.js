@@ -3,9 +3,9 @@ const Guild = require("../models/Guild");
 module.exports = class Elevate extends Command{
 	constructor(client){
 		super(client, {
-			name: "elevate",
+			name: "promote",
 			category: "Admin",
-			help: "Elevates a role.",
+			help: "Promotes a role.",
 			helpArgs: "<Role Name>",
 			elevation: 2
 		});
@@ -29,7 +29,7 @@ module.exports = class Elevate extends Command{
 			}
 		}
 		else{
-			return msg.reply("I was unable to find a role with that ID.");
+			return msg.reply("I was unable to find a role with that name.");
 		}
 	}
 };
