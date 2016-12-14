@@ -88,9 +88,7 @@ client.on("message", async (msg) => {
 			args = args.split(" ");
 		}
 		if(command){
-			let res = msg.member || msg.author;
-			console.log(res);
-			let hasPerm = await command.checkPermission(res);
+			let hasPerm = await command.checkPermission(msg.member || msg.author);
 			if(!hasPerm){
 				return msg.reply("you don't have permission to execute that command, or this command can only be executed in a Guild channel.");
 			}
