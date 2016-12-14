@@ -3,7 +3,7 @@ const Discord = require("discord.js");
 const SpellModel = require("../models/Spell");
 const request = require("request");
 const cheerio = require("cheerio");
-const TIMEOUT = 30000;
+const TIMEOUT = 15000;
 const BASEURL = "http://www.5esrd.com/spellcasting/all-spells";
 
 module.exports = class Spell extends Command{
@@ -85,7 +85,7 @@ module.exports = class Spell extends Command{
 			}
 			catch(err){
 				console.log(err);
-				toEdit.edit("Query cancelled.");
+				return toEdit.edit("Query cancelled.");
 			}
 
 		}
