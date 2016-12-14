@@ -11,9 +11,15 @@ module.exports = class Help extends Command{
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
 		let categories = new Map();
-		let prefix = await this.client.fetchPrefix(msg.guild.id);
+		let prefix;
+		if(!msg.guild){
+			prefix = "";
+		}
+		else{
+			prefix = await this.client.fetchPrefix(msg.guild.id);
+		}
 		await this.client.commands.forEach(async (command) => {
-			if(command.category && command.help && await command.checkPermission(msg.member)){
+			if(command.category && command.help && await command.checkPermission(msg.member || msg.author)){
 				if(!categories.get(command.category)){
 					categories.set(command.category, {name: command.category, helptext: []});
 				}

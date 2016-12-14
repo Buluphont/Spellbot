@@ -16,19 +16,30 @@ class Command{
 		this.help = meta.help;
 		this.elevation = meta.elevation || 0;
 		this.helpArgs = meta.helpArgs;
+		this.guildChannelOnly = meta.guildChannelOnly || false;
 	}
 
+	/**
+	 * @abstract
+	 */
 	async execute(msg, args){ // eslint-disable-line no-unused-vars
-		throw new Error(`Virtual method 'execute' not implemented in command ${this.meta.name}`);
+		throw new Error(`Abstract method 'execute' not implemented in command ${this.meta.name}`);
 	}
 
+	/**
+	 * @param {Discord.GuildMember | Discord.User}
+	 * @return {boolean}
+	 */
 	async checkPermission(member){
+		if(this.guildChannelOnly && !member.guild){
+			return false;
+		}
 		switch(this.elevation){
-			case 3:
+			case 3:	// Bot owner only
 				return member.id === this.client.botOwnerID;
-			case 2:
+			case 2:	// Guild owner
 				return member.id === member.guild.ownerID;
-			case 1: {
+			case 1: {	// Promoted Roles
 				if(member.id === member.guild.ownerID){
 					return true;
 				}
@@ -40,7 +51,7 @@ class Command{
 				});
 				return false;
 			}
-			case 0:
+			case 0:	// Everyone
 				return true;
 			default:
 				return true;

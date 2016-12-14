@@ -7,7 +7,8 @@ module.exports = class Prefix extends Command{
 			help: "Sets the prefix for this guild (you can always execute commands by mentioning me, though).",
 			category: "Admin",
 			helpArgs: "<prefix>",
-			elevation: 1
+			elevation: 1,
+			guildChannelOnly: true
 		});
 	}
 

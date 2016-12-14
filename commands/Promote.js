@@ -7,7 +7,8 @@ module.exports = class Elevate extends Command{
 			category: "Admin",
 			help: "Promotes a role.",
 			helpArgs: "<Role Name>",
-			elevation: 2
+			elevation: 2,
+			guildChannelOnly: true
 		});
 	}
 

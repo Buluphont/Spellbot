@@ -58,7 +58,13 @@ client.on("error", (error) => {
 });
 
 client.on("message", async (msg) => {
-	let prefix = await client.fetchPrefix(msg.guild.id);
+	let prefix;
+	if(msg.guild){
+		prefix = await client.fetchPrefix(msg.guild.id);
+	}
+	else{
+		prefix = "";
+	}
 	let offset;
 	if(msg.content.startsWith(prefix)){
 		offset = prefix.length;
@@ -72,6 +78,9 @@ client.on("message", async (msg) => {
 
 	let commandString = msg.content.substring(offset).split(" ")[0].toLowerCase();
 	let command = client.commands.get(commandString);
+	if(!command){
+		return;
+	}
 	try{
 		let pattern = new RegExp(`${command.name}(.*)`);
 		let args = pattern.exec(msg.content.substring(offset + commandString))[1].trim();
@@ -79,9 +88,11 @@ client.on("message", async (msg) => {
 			args = args.split(" ");
 		}
 		if(command){
-			let hasPerm = await command.checkPermission(msg.member);
+			let res = msg.member || msg.author;
+			console.log(res);
+			let hasPerm = await command.checkPermission(res);
 			if(!hasPerm){
-				return msg.reply("you don't have permission to execute that command.");
+				return msg.reply("you don't have permission to execute that command, or this command can only be executed in a Guild channel.");
 			}
 			command.execute(msg, args);
 		}
