@@ -4,7 +4,8 @@
   "description": "A D&D 5e spell fetcher for Discord, running on Discord.js.",
   "main": "sb.js",
   "scripts": {
-    "start": "node --harmony sb.js"
+    "start": "node --harmony sb.js",
+	"db": "node --harmony populateModels.js"
   },
   "author": "Marisa-chan",
   "dependencies": {
