@@ -35,16 +35,16 @@ module.exports = class Spell extends Command{
 								let data = $(this);
 								let article = data.text();
 								console.log(article);
-								let matches = /\s*(.*)\s*Casting Time: (.*)Range: (.*)Components: (.*)Duration: (.*)\n([\w\W\s\S]*)/.exec(article);
+								let matches = /\s*(.*)\s*Casting Time:(.*)Range:(.*)Components:(.*)Duration:(.*)\n([\w\W\s\S]*)/.exec(article);
 								if(!matches || !matches[1] || !matches[2] || !matches[3] || !matches[4] || !matches[5]){
 									reject("Page malformed. Please tell my creator!");
 								}
-								tentativeSpell.type = matches[1];
-								tentativeSpell.castingTime = matches[2];
-								tentativeSpell.range = matches[3];
-								tentativeSpell.components = matches[4];
-								tentativeSpell.duration = matches[5];
-								tentativeSpell.description = matches[6];
+								tentativeSpell.type = matches[1].trim();
+								tentativeSpell.castingTime = matches[2].trim();
+								tentativeSpell.range = matches[3].trim();
+								tentativeSpell.components = matches[4].trim();
+								tentativeSpell.duration = matches[5].trim();
+								tentativeSpell.description = matches[6].trim();
 							});
 							$("h1").filter(function(){
 								let data = $(this);
