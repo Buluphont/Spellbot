@@ -1,10 +1,7 @@
 const Command = require("../types/Command");
 const Discord = require("discord.js");
 const SpellModel = require("../models/Spell");
-const request = require("request");
-const cheerio = require("cheerio");
 const TIMEOUT = 15000;
-const BASEURL = "http://www.5esrd.com/spellcasting/all-spells";
 
 module.exports = class Spell extends Command{
 	constructor(client){
@@ -15,61 +12,34 @@ module.exports = class Spell extends Command{
 			helpArgs: "<Spell Name>",
 			elevation: 0
 		});
+
+		this._ordinal_suffix_of = function(i){
+			var j = i % 10,
+				k = i % 100;
+			if (j == 1 && k != 11) {
+				return i + "st";
+			}
+			if (j == 2 && k != 12) {
+				return i + "nd";
+			}
+			if (j == 3 && k != 13) {
+				return i + "rd";
+			}
+			return i + "th";
+		};
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
 		let toEdit = await msg.reply("fetching your spell. . .");
 		let spells = await SpellModel.find({name: new RegExp(args.join(" "), "i")});
-		let result;
 		if(!spells || spells.length === 0){
-			toEdit = await toEdit.edit("Spell not found in cache; consulting the great library. . .");
-			let query = args.join("-");
-			let endpoint = `${BASEURL}/${query[0]}/${query}`;
-			try{
-				result = await new Promise((resolve, reject) => {
-					request(endpoint, async (err, res, body) => {
-						if(!err && res.statusCode === 200){
-							let $ = cheerio.load(body);
-							let tentativeSpell = {};
-							$(".article-content").filter(function(){
-								let data = $(this);
-								let article = data.text();
-								console.log(article);
-								let matches = /\s*(.*)\s*Casting Time:(.*)Range:(.*)Components:(.*)Duration:(.*)\n([\w\W\s\S]*)/.exec(article);
-								if(!matches || !matches[1] || !matches[2] || !matches[3] || !matches[4] || !matches[5]){
-									reject("Page malformed. Please tell my creator!");
-								}
-								tentativeSpell.type = matches[1].trim();
-								tentativeSpell.castingTime = matches[2].trim();
-								tentativeSpell.range = matches[3].trim();
-								tentativeSpell.components = matches[4].trim();
-								tentativeSpell.duration = matches[5].trim();
-								tentativeSpell.description = matches[6].trim();
-							});
-							$("h1").filter(function(){
-								let data = $(this);
-								if(!data.text()){
-									reject("Page malformed. Please tell my creator!");
-								}
-								tentativeSpell.name = data.text();
-							});
-							tentativeSpell.url = endpoint;
-							await new SpellModel(tentativeSpell).save();
-							resolve(tentativeSpell);
-						}
-						else{
-							reject("Unable to find your spell. Sorry!");
-						}
-					});
-				});
-			}
-			catch(err){
-				return toEdit.edit(err);
-			}
+			return toEdit.edit("Unable to find your spell. Sorry!");
 		}
-		else if(spells.length > 1){
+		let result;
+		if(spells.length > 1){
 			let toSend = [];
 			toSend.push("Found multiple spells; please specify which spell you meant (maximum 10 results shown).");
+			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.`);
 			for(let i = 0; i < spells.length && i < 10; i++){
 				toSend.push(`${i + 1}. ${spells[i].name}`);
 			}
@@ -101,14 +71,17 @@ module.exports = class Spell extends Command{
 				descFieldValues.push(p);
 			}
 		});
+
+		let spellMeta = [];
+		let type = `*${this._ordinal_suffix_of(result.level)}-level ${result.school}${result.ritual ? " (ritual)" : ""}*\n`;
+		spellMeta.push(type);
+		spellMeta.push(`**Casting Time**: ${result.castingTime}`);
+		spellMeta.push(`**Range**: ${result.range}`);
+		spellMeta.push(`**Components**: ${result.components}`);
+		spellMeta.push(`**Duration**: ${result.duration}`);
 		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
-											.setDescription(`*${result.type}*
-											**Casting Time**: ${result.castingTime}
-											**Range**: ${result.range}
-											**Components**: ${result.components}
-											**Duration**: ${result.duration}`)
-											.setColor(0x97ff43)
-											.setURL(result.url);
+											.setDescription(spellMeta.join("\n"))
+											.setColor(0x97ff43);
 
 		descFieldValues.forEach((p, i) => {
 			if(i == 0){
@@ -120,35 +93,5 @@ module.exports = class Spell extends Command{
 		});
 
 		return toEdit.edit("", {embed: embed});
- /*
-		toEdit.edit("", {embed: {
-			title: `__**${result.name}**__`,
-			description: `*${result.type}*
-			**Casting Time**: ${result.castingTime}
-			**Range**: ${result.range}
-			**Components**: ${result.components}
-			**Duration**: ${result.duration}`,
-			url: result.url,
-			color: 0x97ff43,
-			fields:[{
-				name: "Description",
-				value: result.description.trim().replace("\n", "\n\n"),
-				inline: false
-			}]
-		}});
-		*/
-		//let toSend = [];
-		/*
-		toSend.push("```asciidoc");
-		toSend.push(`= ${result.name} =`);
-		toSend.push(`Casting time :: ${result.castingTime}`);
-		toSend.push(`Range :: ${result.range}`);
-		toSend.push(`Components :: ${result.components}`);
-		toSend.push(`Duration :: ${result.duration}`);
-		toSend.push("\n");
-		toSend.push(result.description.trim());
-		toSend.push("```");
-		toEdit.edit(toSend);
-		*/
 	}
 };

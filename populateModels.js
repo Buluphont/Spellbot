@@ -2,6 +2,7 @@
 const parseString = require("xml2js").parseString;
 const fs = require("fs");
 const Creature = require("./models/Creature");
+const Spell = require("./models/Spell");
 const mongoose = require("mongoose");
 var cr = require("./config.json");
 
@@ -11,17 +12,84 @@ const db = mongoose.connection;
 
 const compendiums = new Map();
 compendiums.set("bestiary", "./assets/5e/Bestiary Compendium 2.0.1.xml");
+compendiums.set("spells", "./assets/5e/Spells Compendium 1.2.1.xml");
 
 db.once("open", function() {
 	console.log("Connected to db.");
 	console.log("Dropping bestiary.");
-	Creature.remove({}, function(err) { // eslint-disable-line
+	Creature.remove({}, function(cErr) { // eslint-disable-line
+		if(cErr){
+			return console.log("Error dropping Creature table: " + cErr);
+		}
 		console.log("Bestiary removed");
 		insertBestiary();
+
+		console.log("Dropping spells.");
+		Spell.remove({}, function(sErr) {
+			if(sErr){
+				return console.log("Error dropping Spell table: " + sErr);
+			}
+			insertSpells();
+			console.log("Finished inserting spells.");
+			//process.exit(0);
+		});
 	});
 });
 
-function insertBestiary(){
+function expandSchool(acronym){
+	switch(acronym){
+		case "A":
+			return "abjuration";
+		case "C":
+			return "conjuration";
+		case "D":
+			return "divination";
+		case "EN":
+			return "enchantment";
+		case "EV":
+			return "evocation";
+		case "I":
+			return "illusion";
+		case "N":
+			return "necromancy";
+		case "T":
+			return "transmutation";
+		default:
+			return "";
+	}
+}
+async function insertSpells(){
+	let tasks = [];
+	parseString(fs.readFileSync(compendiums.get("spells")), (err, result) => {
+		result.compendium.spell.forEach(s => {
+			let spell = {};
+			if(!s.name){
+				return console.log("Spell with no name parsed.");
+			}
+			spell.name = s.name;
+			spell.level = s.level;
+			spell.school = expandSchool(s.school[0]);
+			if(s.ritual){
+				spell.ritual = s.ritual;
+			}
+			spell.castingTime = s.time;
+			spell.range = s.range;
+			spell.components = s.components;
+			spell.duration = s.duration;
+			spell.classes = s.classes;
+			spell.description = s.text.join("\n");
+			if(s.rolls){
+				spell.rolls = s.roll;
+			}
+			console.log(spell.name);
+			console.log(spell.school);
+			tasks.push(new Spell(spell).save());
+		});
+	});
+	return await Promise.all(tasks);
+}
+async function insertBestiary(){
+	let tasks = [];
 	parseString(fs.readFileSync(compendiums.get("bestiary")), (err, result) => {
 		result.compendium.monster.forEach(m => {
 			let monster = {};
@@ -153,7 +221,8 @@ function insertBestiary(){
 					monster.legendary.push(legendary);
 				});
 			}
-			new Creature(monster).save();
+			tasks.push(new Creature(monster).save());
 		});
 	});
+	return await Promise.all(tasks);
 }
