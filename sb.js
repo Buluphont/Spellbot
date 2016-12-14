@@ -3,11 +3,12 @@ const client = new Discord.Client();
 
 var cr = require("./config.json");
 client.defaultPrefix = cr.prefix;
+client.botOwnerID = cr.ownerID;
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 const Guild = require("./models/Guild");
 
-mongoose.connect("mongodb://localhost:27017/myproject");
+mongoose.connect(cr.db_endpoint);
 // This shit is used everywhere. Might as well make it global.
 client.random = function(low, high) {
 	return Math.floor(Math.random() * (high - low + 1) + low);
