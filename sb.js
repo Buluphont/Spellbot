@@ -1,29 +1,29 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 
+// Load configs
 var cr = require("./config.json");
 client.defaultPrefix = cr.prefix;
 client.botOwnerID = cr.ownerID;
+
+// Configure mongoose, load models used in this script
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 const Guild = require("./models/Guild");
-
 mongoose.connect(cr.db_endpoint);
-// This shit is used everywhere. Might as well make it global.
-client.random = function(low, high) {
-	return Math.floor(Math.random() * (high - low + 1) + low);
-};
-
-client.commands = new Map();
-
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error"));
+
+// Log into Discord *after* db connection established
 db.once("open", function() {
 	client.db = db;
 	client.login(cr.token);
 	console.log("Connected to db.");
 });
 
+// Load commands.
+// TODO: Recursively search commands directory
+client.commands = new Map();
 client.once("ready", () => {
 	const dir = "./commands/";
 	const fs = require("fs");
