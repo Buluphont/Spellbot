@@ -18,9 +18,7 @@ module.exports = class Spell extends Command{
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
 		let toEdit = await msg.reply("fetching your spell. . .");
-		console.log(args.join(" "));
 		let spells = await SpellModel.find({name: new RegExp(args.join(" "), "i")});
-		console.log(await SpellModel.find({name: "Dancing Lights"}));
 		let result;
 		if(!spells || spells.length === 0){
 			toEdit = await toEdit.edit("Spell not found in cache; consulting the great library. . .");
@@ -73,11 +71,13 @@ module.exports = class Spell extends Command{
 			spells.forEach((spell, i) => {
 				toSend.push(`${i + 1}. ${spell.name}`);
 			});
-			toEdit = await toEdit.edit();
+			console.log(toSend);
+			toEdit = await toEdit.edit(toSend);
 			let filter = (m) => {
-				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.coment) && parseInt(m.content) <= spells.length;
+				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= spells.length;
 			};
 			try{
+				console.log("setting filter");
 				let selection = await toEdit.channel.awaitMessages(filter, {
 					time: TIMEOUT,
 					maxMatches: 1
