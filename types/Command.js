@@ -32,8 +32,13 @@ class Command{
 				if(member.id === member.guild.ownerID){
 					return true;
 				}
-				let elevatedRole = await this.client.fetchElevatedRole(member.guild.id);
-				return member.roles.get(elevatedRole.id);
+				let elevatedRoleIDs = await this.client.fetchElevatedRoleIDs(member.guild.id);
+				elevatedRoleIDs.forEach(r => {
+					if(member.roles.get(r)){
+						return true;
+					}
+				});
+				return false;
 			}
 			case 0:
 				return true;

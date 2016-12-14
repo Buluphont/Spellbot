@@ -93,18 +93,25 @@ client.on("message", async (msg) => {
 
 client.fetchPrefix = async function(id){
 	if(client.db){
-		try{
-			let guild = await Guild.findOne({id: id});
-			if(guild){
-				return guild.prefix || client.defaultPrefix;
-			}
-			else{
-				await new Guild({id: id, prefix: client.defaultPrefix, elevatedRoles: []}).save();
-				return client.defaultPrefix;
-			}
+		let guild = await Guild.findOne({id: id});
+		if(guild){
+			return guild.prefix || client.defaultPrefix;
 		}
-		catch(err){
-			throw new Error(err);
+		else{
+			await new Guild({id: id, prefix: client.defaultPrefix, elevatedRoles: []}).save();
+			return client.defaultPrefix;
+		}
+	}
+};
+
+client.fetchElevatedRoleIDs = async function(id){
+	if(client.db){
+		let guild = await Guild.findOne({id: id});
+		if(guild){
+			return guild.elevatedRoles;
+		}
+		else{
+			return [];
 		}
 	}
 };
