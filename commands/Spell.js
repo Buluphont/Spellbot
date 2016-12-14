@@ -34,6 +34,7 @@ module.exports = class Spell extends Command{
 							$(".article-content").filter(function(){
 								let data = $(this);
 								let article = data.text();
+								console.log(article);
 								let matches = /\s*(.*)\s*Casting Time: (.*)Range: (.*)Components: (.*)Duration: (.*)\n([\w\W\s\S]*)/.exec(article);
 								if(!matches || !matches[1] || !matches[2] || !matches[3] || !matches[4] || !matches[5]){
 									reject("Page malformed. Please tell my creator!");
