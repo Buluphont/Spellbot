@@ -1,6 +1,6 @@
 {
   "name": "Spellbot",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "A D&D 5e spell fetcher for Discord, running on Discord.js.",
   "main": "sb.js",
   "scripts": {
