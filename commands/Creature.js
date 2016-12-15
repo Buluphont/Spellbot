@@ -38,6 +38,7 @@ module.exports = class Creature extends Command{
 			});
 			return embed;
 		};
+		
 		this._getModifierFor = function(attribute){
 			let modifier = Math.floor(parseInt(attribute) / 2) - 5;
 			if(modifier >= 0){

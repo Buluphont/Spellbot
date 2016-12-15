@@ -22,7 +22,7 @@ module.exports = class Eval extends Command{
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
 		msg.reply("Evaluating...").then(reply => {
-			let code = msg.content.split(" ").slice(1).join(" ");
+			let code = args.join(" ");
 			try {
 				let evaled = eval(code);
 				if (typeof evaled !== "string"){

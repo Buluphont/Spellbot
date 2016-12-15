@@ -3,6 +3,9 @@ const parseString = require("xml2js").parseString;
 const fs = require("fs");
 const Creature = require("./models/Creature");
 const Spell = require("./models/Spell");
+const Class = require("./models/Class");
+const Feature = require("./models/Feature");
+
 const mongoose = require("mongoose");
 var cr = require("./config.json");
 
@@ -15,30 +18,64 @@ compendiums.set("bestiary", "./assets/5e/Bestiary Compendium 2.0.1.xml");
 compendiums.set("spells", "./assets/5e/Spells Compendium 1.2.1.xml");
 compendiums.set("character", "./assets/5e/Character Compendium 2.0.0.xml");
 
-db.once("open", function() {
+db.once("open", async function() {
 	console.log("Connected to db.");
-	parseString(fs.readFileSync(compendiums.get("character")), (err, result) => {
-		console.log(JSON.stringify(result.compendium.class));
-		process.exit(0);
-	});
-	// console.log("Dropping bestiary.");
-	// Creature.remove({}, function(cErr) { // eslint-disable-line
-	// 	if(cErr){
-	// 		return console.log("Error dropping Creature table: " + cErr);
-	// 	}
-	// 	console.log("Bestiary removed");
-	// 	insertBestiary();
-	//
-	// 	console.log("Dropping spells.");
-	// 	Spell.remove({}, function(sErr) {
-	// 		if(sErr){
-	// 			return console.log("Error dropping Spell table: " + sErr);
-	// 		}
-	// 		insertSpells();
-	// 		console.log("Finished inserting spells.");
-	// 		//process.exit(0);
-	// 	});
-	// });
+	console.log("Dropping bestiary.");
+	console.log(await new Promise((resolve, reject) => {
+		Creature.remove({}, function(err) { // eslint-disable-line
+			if(err){
+				reject("Error dropping Creature table: " + err);
+			}
+			console.log("Bestiary dropped");
+			try{
+				insertBestiary();
+				resolve("Successfully inserted bestiary.");
+			}
+			catch(e){
+				reject(e);
+			}
+		});
+	}));
+
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping spells.");
+		Spell.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Spell table: " + err);
+			}
+			console.log("Spells dropped.");
+			try{
+				insertSpells();
+				resolve("Finished inserting spells.");
+			}
+			catch(e){
+				reject(e);
+			}
+		});
+	}));
+
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping classes.");
+		Class.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Class table: " + err);
+			}
+			resolve("Classes dropped.");
+		});
+	}));
+
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping features.");
+		Feature.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Feature table: " + err);
+			}
+			resolve("Features dropped.");
+		});
+	}));
+
+	insertCharacterCompendium();
+	//process.exit(0);
 });
 
 function expandSchool(acronym){
@@ -63,13 +100,61 @@ function expandSchool(acronym){
 			return "";
 	}
 }
+
+async function insertCharacterCompendium(){
+	let tasks = [];
+	parseString(fs.readFileSync(compendiums.get("character")), (err, result) => {
+		console.log("Inserting");
+		result.compendium.class.forEach(c => {
+			console.log("Found a class: " + c.name);
+			let characterClass = {};
+			if(!c.name){
+				throw new Error("Class with no name parsed.");
+			}
+			characterClass.name = c.name;
+			characterClass.hd = c.hd;
+			if(c.proficiency){
+				characterClass.proficiency = c.proficiency;
+			}
+			if(c.spellAbility){
+				characterClass.spellAbility = c.spellAbility;
+			}
+			characterClass.levels = [];
+
+			c.autolevel.forEach(l => {
+				let lvl = {};
+				lvl.level = l.$.level;
+
+				if(l.slots){
+					lvl.slots = l.slots;
+				}
+
+				if(l.feature){
+					lvl.features = [];
+					l.feature.forEach(feature => {
+						lvl.features.push(feature.name);
+						tasks.push(new Feature({
+							name: feature.name,
+							class: c.name,
+							text: feature.text
+						}).save());
+					});
+				}
+				characterClass.levels.push(lvl);
+			});
+
+			tasks.push(new Class(characterClass).save());
+		});
+	});
+	return await Promise.all(tasks);
+}
 async function insertSpells(){
 	let tasks = [];
 	parseString(fs.readFileSync(compendiums.get("spells")), (err, result) => {
 		result.compendium.spell.forEach(s => {
 			let spell = {};
 			if(!s.name){
-				return console.log("Spell with no name parsed.");
+				throw new Error("Spell with no name parsed.");
 			}
 			spell.name = s.name;
 			spell.level = s.level;
@@ -86,8 +171,6 @@ async function insertSpells(){
 			if(s.rolls){
 				spell.rolls = s.roll;
 			}
-			console.log(spell.name);
-			console.log(spell.school);
 			tasks.push(new Spell(spell).save());
 		});
 	});
@@ -99,7 +182,7 @@ async function insertBestiary(){
 		result.compendium.monster.forEach(m => {
 			let monster = {};
 			if(!m.name){
-				return console.log("Monster with no name parsed.");
+				throw new Error("Monster with no name parsed.");
 			}
 			monster.name = m.name;
 			if(m.size){

@@ -3,7 +3,7 @@ module.exports = class About extends Command{
 	constructor(client){
 		super(client, {
 			name: "about",
-			help: "Let me tell you all about me.",
+			help: "Let me tell you all about me, and how to get support or invite me to your server.",
 			category: "Misc",
 			elevation: 0
 		});
