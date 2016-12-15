@@ -23,7 +23,7 @@ module.exports = class Feature extends SearchCommand{
 			prefix = "";
 		}
 		if(!args){
-			msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
+			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
 		}
 		let toEdit = await msg.reply("fetching your class. . .");
 		let matches = /\s*(\w*.*?)\s*[^\s\w]\s*(\w*(?:\s\w+)*)\s*/.exec(args.join(" "));
