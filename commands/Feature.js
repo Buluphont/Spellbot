@@ -15,17 +15,21 @@ module.exports = class Feature extends SearchCommand{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
+		let prefix;
+		if(msg.guild){
+			prefix = await this.client.fetchPrefix(msg.guild.id);
+		}
+		else{
+			prefix = "";
+		}
+		if(!args){
+			msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
+		}
 		let toEdit = await msg.reply("fetching your class. . .");
 		let matches = /\s*(\w*.*?)\s*[^\s\w]\s*(\w*(?:\s\w+)*)\s*/.exec(args.join(" "));
 		if(!matches || !matches[1] || !matches[2]){
-			let prefix;
-			if(msg.guild){
-				prefix = await this.client.fetchPrefix(msg.guild.id);
-			}
-			else{
-				prefix = "";
-			}
-			return msg.reply(`invalid command. Proper usage: \`${prefix}${this.name} barbarian/primal rage\``);
+
+			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
 		}
 
 		let classes = await Class.find({name: new RegExp(matches[1], "i")});
