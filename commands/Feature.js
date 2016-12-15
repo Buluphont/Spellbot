@@ -17,7 +17,7 @@ module.exports = class Prefix extends Command{
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
 		let toEdit = await msg.reply("fetching your class. . .");
-		let matches = /\s*(\w*.*?)\s*[^\s\w]\s*((?:\w|\s)+\w)\s*$/.exec(args.join(" "));
+		let matches = /\s*(\w*.*?)\s*[^\s\w]\s*(\w*(?:\s\w+)*)\s*/.exec(args.join(" "));
 		if(!matches || !matches[1] || !matches[2]){
 			let prefix;
 			if(msg.guild){
