@@ -13,27 +13,32 @@ const db = mongoose.connection;
 const compendiums = new Map();
 compendiums.set("bestiary", "./assets/5e/Bestiary Compendium 2.0.1.xml");
 compendiums.set("spells", "./assets/5e/Spells Compendium 1.2.1.xml");
+compendiums.set("character", "./assets/5e/Character Compendium 2.0.0.xml");
 
 db.once("open", function() {
 	console.log("Connected to db.");
-	console.log("Dropping bestiary.");
-	Creature.remove({}, function(cErr) { // eslint-disable-line
-		if(cErr){
-			return console.log("Error dropping Creature table: " + cErr);
-		}
-		console.log("Bestiary removed");
-		insertBestiary();
-
-		console.log("Dropping spells.");
-		Spell.remove({}, function(sErr) {
-			if(sErr){
-				return console.log("Error dropping Spell table: " + sErr);
-			}
-			insertSpells();
-			console.log("Finished inserting spells.");
-			//process.exit(0);
-		});
+	parseString(fs.readFileSync(compendiums.get("character")), (err, result) => {
+		console.log(JSON.stringify(result.compendium.class));
+		process.exit(0);
 	});
+	// console.log("Dropping bestiary.");
+	// Creature.remove({}, function(cErr) { // eslint-disable-line
+	// 	if(cErr){
+	// 		return console.log("Error dropping Creature table: " + cErr);
+	// 	}
+	// 	console.log("Bestiary removed");
+	// 	insertBestiary();
+	//
+	// 	console.log("Dropping spells.");
+	// 	Spell.remove({}, function(sErr) {
+	// 		if(sErr){
+	// 			return console.log("Error dropping Spell table: " + sErr);
+	// 		}
+	// 		insertSpells();
+	// 		console.log("Finished inserting spells.");
+	// 		//process.exit(0);
+	// 	});
+	// });
 });
 
 function expandSchool(acronym){
