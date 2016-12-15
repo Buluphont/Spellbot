@@ -1,10 +1,9 @@
 const Discord = require("discord.js");
-const Command = require("../types/Command");
+const SearchCommand = require("../types/SearchCommand");
 const Class = require("../models/Class");
-const Feature = require("../models/Feature");
-const TIMEOUT = 15000;
+const FeatureModel = require("../models/Feature");
 
-module.exports = class Prefix extends Command{
+module.exports = class Feature extends SearchCommand{
 	constructor(client){
 		super(client, {
 			name: "feature",
@@ -28,7 +27,7 @@ module.exports = class Prefix extends Command{
 			}
 			return msg.reply(`invalid command. Proper usage: \`${prefix}${this.name} barbarian/primal rage\``);
 		}
-		console.log(matches[1]);
+
 		let classes = await Class.find({name: new RegExp(matches[1], "i")});
 		if(!classes || classes.length === 0){
 			return toEdit.edit("Unable to find that class. Sorry!");
@@ -36,55 +35,25 @@ module.exports = class Prefix extends Command{
 
 		let resultClass;
 		if(classes.length > 1){
-			let toSend = [];
-			toSend.push("Found multiple classes; please say the number corresponding to the class you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
-			for(let i = 0; i < classes.length && i < 10; i++){
-				toSend.push(`${i + 1}. ${classes[i].name}`);
-			}
-			toEdit = await toEdit.edit(toSend);
-			let filter = (m) => {
-				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= classes.length;
-			};
 			try{
-				let selection = await toEdit.channel.awaitMessages(filter, {
-					time: TIMEOUT,
-					maxMatches: 1
-				});
-				resultClass = classes[parseInt(selection.first().content) - 1];
+				resultClass = await super.disambiguate(toEdit, msg.author, "class", classes, "name");
 			}
 			catch(err){
-				console.log(err);
-				return toEdit.edit("Query cancelled.");
+				toEdit.edit(err);
 			}
 		}
 		else{
 			resultClass = classes[0];
 		}
-		let features = await Feature.find({name: new RegExp(matches[2], "i"), class: resultClass.name});
-		console.log(features);
+		let features = await FeatureModel.find({name: new RegExp(matches[2], "i"), class: resultClass.name});
+
 		let result;
 		if(features.length > 1){
-			let toSend = [];
-			toSend.push("Found multiple features; please say the number corresponding to the class feature you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
-			for(let i = 0; i < features.length && i < 10; i++){
-				toSend.push(`${i + 1}. ${features[i].name} (${features[i].level})`);
-			}
-			toEdit = await toEdit.edit(toSend);
-			let filter = (m) => {
-				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= features.length;
-			};
 			try{
-				let selection = await toEdit.channel.awaitMessages(filter, {
-					time: TIMEOUT,
-					maxMatches: 1
-				});
-				result = features[parseInt(selection.first().content) - 1];
+				result = await super.disambiguate(toEdit, msg.author, "feature", features, "name");
 			}
 			catch(err){
-				console.log(err);
-				return toEdit.edit("Query cancelled.");
+				return toEdit.edit(err);
 			}
 		}
 		else{

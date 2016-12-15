@@ -1,16 +1,16 @@
-const Command = require("../types/Command");
+const SearchCommand = require("../types/SearchCommand");
 const Discord = require("discord.js");
 const FeatModel = require("../models/Feat");
-const TIMEOUT = 15000;
 
-module.exports = class Feat extends Command{
+module.exports = class Feat extends SearchCommand{
 	constructor(client){
 		super(client, {
 			name: "feat",
 			category: "5e",
 			help: "Searches for a feat by name.",
 			helpArgs: "<Feat Name>",
-			elevation: 0
+			elevation: 0,
+			timeout: 15000
 		});
 	}
 
@@ -23,26 +23,11 @@ module.exports = class Feat extends Command{
 
 		let result;
 		if(feats.length > 1){
-			let toSend = [];
-			toSend.push("Found multiple feats; please say the number corresponding to the feat you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
-			for(let i = 0; i < feats.length && i < 10; i++){
-				toSend.push(`${i + 1}. ${feats[i].name}`);
-			}
-			toEdit = await toEdit.edit(toSend);
-			let filter = (m) => {
-				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= feats.length;
-			};
 			try{
-				let selection = await toEdit.channel.awaitMessages(filter, {
-					time: TIMEOUT,
-					maxMatches: 1
-				});
-				result = feats[parseInt(selection.first().content) - 1];
+				result = await super.disambiguate(toEdit, msg.author, "feat", feats, "name");
 			}
 			catch(err){
-				console.log(err);
-				return toEdit.edit("Query cancelled.");
+				return toEdit.edit(err);
 			}
 		}
 		else{

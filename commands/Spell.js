@@ -1,16 +1,16 @@
-const Command = require("../types/Command");
+const SearchCommand = require("../types/SearchCommand");
 const Discord = require("discord.js");
 const SpellModel = require("../models/Spell");
-const TIMEOUT = 15000;
 
-module.exports = class Spell extends Command{
+module.exports = class Spell extends SearchCommand{
 	constructor(client){
 		super(client, {
 			name: "spell",
 			category: "5e",
 			help: "Searches for a spell by name.",
 			helpArgs: "<Spell Name>",
-			elevation: 0
+			elevation: 0,
+			timeout: 15000
 		});
 
 		this._ordinal_suffix_of = function(i){
@@ -30,6 +30,7 @@ module.exports = class Spell extends Command{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
+		console.log("Entered exec");
 		let toEdit = await msg.reply("fetching your spell. . .");
 		let spells = await SpellModel.find({name: new RegExp(args.join(" "), "i")});
 		if(!spells || spells.length === 0){
@@ -37,26 +38,13 @@ module.exports = class Spell extends Command{
 		}
 		let result;
 		if(spells.length > 1){
-			let toSend = [];
-			toSend.push("Found multiple spells; please say the number corresponding to the spell you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
-			for(let i = 0; i < spells.length && i < 10; i++){
-				toSend.push(`${i + 1}. ${spells[i].name}`);
-			}
-			toEdit = await toEdit.edit(toSend);
-			let filter = (m) => {
-				return m.author.id === msg.author.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= spells.length;
-			};
 			try{
-				let selection = await toEdit.channel.awaitMessages(filter, {
-					time: TIMEOUT,
-					maxMatches: 1
-				});
-				result = spells[parseInt(selection.first().content) - 1];
+				console.log("About to enter super");
+				result = await super.disambiguate(toEdit, msg.author, "spell", spells, "name");
+				console.log("Exited super!?");
 			}
 			catch(err){
-				console.log(err);
-				return toEdit.edit("Query cancelled.");
+				return toEdit.edit(err);
 			}
 		}
 		else{

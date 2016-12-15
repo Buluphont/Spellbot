@@ -1,4 +1,4 @@
-class Command{
+module.exports = class Command{
 	constructor(client, meta){
 		if(!client){
 			throw new Error("Cannot construct a Command without a client instance.");
@@ -57,6 +57,4 @@ class Command{
 				return true;
 		}
 	}
-}
-
-module.exports = Command;
+};
