@@ -140,7 +140,7 @@ async function insertCharacterCompendium(){
 			if(f.prerequisite){
 				feat.prerequisite = f.prerequisite;
 			}
-			feat.text = f.text;
+			feat.text = f.text.join("\n");
 			tasks.push(new Feat(feat).save());
 		});
 
