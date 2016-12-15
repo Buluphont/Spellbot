@@ -28,6 +28,8 @@ module.exports = class Help extends Command{
 		});
 
 		let tosend = [];
+		tosend.push("For all commands, `<>` denotes **required** parameters, while `[]` denotes **optional** parameters.");
+		tosend.push("Please *omit* the `<>` and `[]` characters when executing commands.");
 		tosend.push("```asciidoc");
 		categories.forEach(category => {
 			tosend.push(`= ${category.name} =`);
