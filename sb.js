@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const package = require("package.json");
+const package = require("./package.json");
 // Load configs
 var cr = require("./config.json");
 client.defaultPrefix = cr.prefix;
