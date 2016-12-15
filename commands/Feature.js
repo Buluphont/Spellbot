@@ -25,10 +25,10 @@ module.exports = class Feature extends SearchCommand{
 		if(!args){
 			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
 		}
+
 		let toEdit = await msg.reply("fetching your class. . .");
 		let matches = /\s*(\w*.*?)\s*[^\s\w]\s*(\w*(?:\s\w+)*)\s*/.exec(args.join(" "));
 		if(!matches || !matches[1] || !matches[2]){
-
 			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
 		}
 
@@ -50,7 +50,9 @@ module.exports = class Feature extends SearchCommand{
 			resultClass = classes[0];
 		}
 		let features = await FeatureModel.find({name: new RegExp(matches[2], "i"), class: resultClass.name});
-
+		if(!features || features.length === 0){
+			return toEdit.edit("Unable to find that feature. Sorry!");
+		}
 		let result;
 		if(features.length > 1){
 			try{
