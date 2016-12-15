@@ -31,6 +31,16 @@ module.exports = class Spell extends SearchCommand{
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
 		console.log("Entered exec");
+		let prefix;
+		if(msg.guild){
+			prefix = await this.client.fetchPrefix(msg.guild.id);
+		}
+		else{
+			prefix = "";
+		}
+		if(!args){
+			return msg.reply(`invalid command; please specify a spell.\nProper usage: \`${prefix}${this.name} dancing lights\``);
+		}
 		let toEdit = await msg.reply("fetching your spell. . .");
 		let spells = await SpellModel.find({name: new RegExp(args.join(" "), "i")});
 		if(!spells || spells.length === 0){

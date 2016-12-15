@@ -13,8 +13,15 @@ module.exports = class Prefix extends Command{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
+		let prefix;
+		if(msg.guild){
+			prefix = await this.client.fetchPrefix(msg.guild.id);
+		}
+		else{
+			prefix = "";
+		}
 		if(!args){
-			return msg.reply("no prefix specified.");
+			return msg.reply(`invalid command; please specify a prefix.\nProper usage: \`${prefix}${this.name} $\``);
 		}
 		let guild = await Guild.findOne({id: msg.guild.id});
 		guild.prefix = args.join(" ");

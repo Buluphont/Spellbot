@@ -15,6 +15,16 @@ module.exports = class Feat extends SearchCommand{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
+		let prefix;
+		if(msg.guild){
+			prefix = await this.client.fetchPrefix(msg.guild.id);
+		}
+		else{
+			prefix = "";
+		}
+		if(!args){
+			return msg.reply(`invalid command; please specify a feat.\nProper usage: \`${prefix}${this.name} tavern brawler\``);
+		}
 		let toEdit = await msg.reply("fetching your feat. . .");
 		let feats = await FeatModel.find({name: new RegExp(args.join(" "), "i")});
 		if(!feats || feats.length === 0){

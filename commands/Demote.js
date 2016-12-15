@@ -13,6 +13,16 @@ module.exports = class Demote extends Command{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
+		let prefix;
+		if(msg.guild){
+			prefix = await this.client.fetchPrefix(msg.guild.id);
+		}
+		else{
+			prefix = "";
+		}
+		if(!args){
+			return msg.reply(`invalid command; please specify a role name.\nProper usage: \`${prefix}${this.name} Some Role Name\``);
+		}
 		let targetRole = msg.guild.roles.find("name", args.join(" "));
 		if(targetRole){
 			let guild = await Guild.findOne({id: msg.guild.id});

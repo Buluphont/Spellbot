@@ -113,7 +113,17 @@ module.exports = class Creature extends SearchCommand{
 			}
 		};
 	}
-	async execute(msg, args){	// eslint-disable-line no-unused-vars
+	async execute(msg, args){
+		let prefix;
+		if(msg.guild){
+			prefix = await this.client.fetchPrefix(msg.guild.id);
+		}
+		else{
+			prefix = "";
+		}
+		if(!args){
+			return msg.reply(`invalid command; please specify a creature.\nProper usage: \`${prefix}${this.name} aboleth\``);
+		}
 		let toEdit = await msg.reply("fetching your creature. . .");
 		let creatures = await CreatureModel.find({name: new RegExp(args.join(" "), "i")});
 		if(!creatures || creatures.length === 0){
