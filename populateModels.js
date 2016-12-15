@@ -1,18 +1,28 @@
+/**
+ * This script inserts models one at a time.
+ * The reason for doing it one at a time is... well, my VPS has basically no RAM.
+ * At some point, maybe I'll split this script up. Or not. Ahaha.
+ */
 
+// XML parsing utilities
 const parseString = require("xml2js").parseString;
 const fs = require("fs");
+
+// DB models
 const Creature = require("./models/Creature");
 const Spell = require("./models/Spell");
 const Class = require("./models/Class");
 const Feature = require("./models/Feature");
+const Feat = require("./models/Feat");
 
+// DB
 const mongoose = require("mongoose");
 var cr = require("./config.json");
-
 mongoose.Promise = global.Promise;
 mongoose.connect(cr.db_endpoint);
 const db = mongoose.connection;
 
+// XML dataset
 const compendiums = new Map();
 compendiums.set("bestiary", "./assets/5e/Bestiary Compendium 2.0.1.xml");
 compendiums.set("spells", "./assets/5e/Spells Compendium 1.2.1.xml");
@@ -74,8 +84,19 @@ db.once("open", async function() {
 		});
 	}));
 
-	insertCharacterCompendium();
-	//process.exit(0);
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping feats.");
+		Feat.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Feat table: " + err);
+			}
+			resolve("Feats dropped.");
+		});
+	}));
+
+	await insertCharacterCompendium();
+	console.log("Finished inserting Character compendium.");
+	process.exit(0);
 });
 
 function expandSchool(acronym){
@@ -104,9 +125,26 @@ function expandSchool(acronym){
 async function insertCharacterCompendium(){
 	let tasks = [];
 	parseString(fs.readFileSync(compendiums.get("character")), (err, result) => {
-		console.log("Inserting");
+		result.compendium.feat.forEach(f => {
+			let feat = {};
+			if(!f.name){
+				throw new Error("Feat with no name parsed.");
+			}
+			feat.name = f.name;
+			if(f.modifier){
+				feat.modifier = {
+					text: f.modifier[0]._,
+					category: f.modifier[0].$.category
+				};
+			}
+			if(f.prerequisite){
+				feat.prerequisite = f.prerequisite;
+			}
+			feat.text = f.text;
+			tasks.push(new Feat(feat).save());
+		});
+
 		result.compendium.class.forEach(c => {
-			console.log("Found a class: " + c.name);
 			let characterClass = {};
 			if(!c.name){
 				throw new Error("Class with no name parsed.");
