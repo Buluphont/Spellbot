@@ -161,7 +161,7 @@ module.exports = class Creature extends Command{
 		if(result.saves){
 			description.push(`**Saving Throws** ${result.saves}`);
 		}
-		if(result.skills){
+		if(result.skill){
 			description.push(`**Skills** ${result.skills}\n`);
 		}
 		if(result.vulnerable){
