@@ -37,8 +37,8 @@ module.exports = class Prefix extends Command{
 		let resultClass;
 		if(classes.length > 1){
 			let toSend = [];
-			toSend.push("Found multiple classes; please specify which class you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.`);
+			toSend.push("Found multiple classes; please say the number corresponding to the class you meant (maximum 10 results shown).");
+			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
 			for(let i = 0; i < classes.length && i < 10; i++){
 				toSend.push(`${i + 1}. ${classes[i].name}`);
 			}
@@ -66,10 +66,10 @@ module.exports = class Prefix extends Command{
 		let result;
 		if(features.length > 1){
 			let toSend = [];
-			toSend.push("Found multiple features; please specify which class feature you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.`);
+			toSend.push("Found multiple features; please say the number corresponding to the class feature you meant (maximum 10 results shown).");
+			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
 			for(let i = 0; i < features.length && i < 10; i++){
-				toSend.push(`${i + 1}. ${features[i].name}`);
+				toSend.push(`${i + 1}. ${features[i].name} (${features[i].level})`);
 			}
 			toEdit = await toEdit.edit(toSend);
 			let filter = (m) => {
@@ -91,13 +91,12 @@ module.exports = class Prefix extends Command{
 			result = features[0];
 		}
 		let description;
-		if(result.class.length + result.text.length <= 1998){
-			description = `**Class** ${result.class}\n\n**Description** ${result.text}`;
+		if(result.class.length + result.text.length + result.level.length <= 1995){
+			description = `*${result.class} ${result.level}*\n\n${result.text}`;
 		}
 		else{
-			description = `**Class** ${result.class}`;
+			description = `*${result.class} ${result.level}*`;
 			let text = result.text;
-			text = text.concat(`**Description** ${result.text}`);
 			let stringBuilder = [];
 
 			while(text.length > 1024){

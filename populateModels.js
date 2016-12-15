@@ -136,7 +136,8 @@ async function insertCharacterCompendium(){
 						tasks.push(new Feature({
 							name: feature.name,
 							class: c.name,
-							text: feature.text
+							level: lvl.level,
+							text: feature.text.join("\n")
 						}).save());
 					});
 				}

@@ -38,7 +38,7 @@ module.exports = class Creature extends Command{
 			});
 			return embed;
 		};
-		
+
 		this._getModifierFor = function(attribute){
 			let modifier = Math.floor(parseInt(attribute) / 2) - 5;
 			if(modifier >= 0){
@@ -123,8 +123,8 @@ module.exports = class Creature extends Command{
 		let result;
 		if(creatures.length > 1){
 			let toSend = [];
-			toSend.push("Found multiple creatures; please specify which creature you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.`);
+			toSend.push("Found multiple creatures; please say the number corresponding to the creature you meant (maximum 10 results shown).");
+			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
 			for(let i = 0; i < creatures.length && i < 10; i++){
 				toSend.push(`${i + 1}. ${creatures[i].name}`);
 			}

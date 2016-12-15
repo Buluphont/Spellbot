@@ -38,8 +38,8 @@ module.exports = class Spell extends Command{
 		let result;
 		if(spells.length > 1){
 			let toSend = [];
-			toSend.push("Found multiple spells; please specify which spell you meant (maximum 10 results shown).");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.`);
+			toSend.push("Found multiple spells; please say the number corresponding to the spell you meant (maximum 10 results shown).");
+			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
 			for(let i = 0; i < spells.length && i < 10; i++){
 				toSend.push(`${i + 1}. ${spells[i].name}`);
 			}
