@@ -1,8 +1,8 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const package = require("./package.json");
 // Load configs
 var cr = require("./config.json");
+client.package = require("./package.json");
 client.defaultPrefix = cr.prefix;
 client.botOwnerID = cr.ownerID;
 
@@ -45,7 +45,7 @@ client.once("ready", () => {
 		}
 	});
 	console.log(`Ready to begin! Serving in ${client.guilds.size} servers.`);
-	client.user.setGame(`DM "help" for assistance! | Version ${package.version}`);
+	client.user.setGame(`DM "help" for assistance! | Version ${client.package.version}`);
 });
 
 client.on("disconnect", () => {
