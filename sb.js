@@ -45,7 +45,7 @@ client.once("ready", () => {
 		}
 	});
 	console.log(`Ready to begin! Serving in ${client.guilds.size} servers.`);
-	client.user.setPlaying(`DM "help" for assistance! | Version ${package.version}`);
+	client.user.setGame(`DM "help" for assistance! | Version ${package.version}`);
 });
 
 client.on("disconnect", () => {
