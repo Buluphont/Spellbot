@@ -23,13 +23,13 @@ module.exports = class Feature extends SearchCommand{
 			prefix = "";
 		}
 		if(!args){
-			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
+			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal path\``);
 		}
 
 		let toEdit = await msg.reply("fetching your class. . .");
 		let matches = /\s*(\w*.*?)\s*[^\s\w]\s*(\w*(?:\s\w+)*)\s*/.exec(args.join(" "));
 		if(!matches || !matches[1] || !matches[2]){
-			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal rage\``);
+			return msg.reply(`invalid command; please specify a class and feature name.\nProper usage: \`${prefix}${this.name} barbarian/primal path\``);
 		}
 
 		let classes = await Class.find({name: new RegExp(matches[1], "i")});
