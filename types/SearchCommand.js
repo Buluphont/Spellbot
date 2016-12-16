@@ -7,7 +7,6 @@ module.exports = class SearchCommand extends Command{
 	}
 
 	async disambiguate(toEdit, querier, typeName, data, identifier){
-		console.log("Entered super");
 		let toSend = [];
 		toSend.push(`Found multiple ${typeName}s; please say the number corresponding to the ${typeName} you meant (maximum 10 results shown).`);
 		toSend.push(`This search will be automatically cancelled in ${this._timeout/1000} seconds.\n`);
