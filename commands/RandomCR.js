@@ -184,7 +184,7 @@ module.exports = class RandomCR extends Command{
 			return msg.reply(`invalid command; please specify a Challenge Rating.\nProper usage: \`${prefix}${this.name} 13\``);
 		}
 		let toEdit = await msg.reply("fetching your creatures. . .");
-		let creatures = await CreatureModel.find({cr: new RegExp("^" + args.join(" ") + "$", "i")});
+		let creatures = await CreatureModel.find({cr: args[0]});
 		if(!creatures || creatures.length === 0){
 			return toEdit.edit("Unable to find creatures at that CR. Sorry!");
 		}
