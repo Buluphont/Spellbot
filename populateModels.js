@@ -14,7 +14,8 @@ const Spell = require("./models/Spell");
 const Class = require("./models/Class");
 const Feature = require("./models/Feature");
 const Feat = require("./models/Feat");
-
+const Race = require("./models/Race");
+const Trait = require("./models/Trait");
 // DB
 const mongoose = require("mongoose");
 var cr = require("./config.json");
@@ -30,6 +31,10 @@ compendiums.set("character", "./assets/5e/Character Compendium 2.0.0.xml");
 
 db.once("open", async function() {
 	console.log("Connected to db.");
+	insertEverything();
+});
+
+async function insertEverything(){
 	console.log("Dropping bestiary.");
 	console.log(await new Promise((resolve, reject) => {
 		Creature.remove({}, function(err) { // eslint-disable-line
@@ -94,11 +99,29 @@ db.once("open", async function() {
 		});
 	}));
 
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping races.");
+		Race.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Race table: " + err);
+			}
+			resolve("races dropped.");
+		});
+	}));
+
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping traits.");
+		Trait.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Trait table: " + err);
+			}
+			resolve("Traits dropped.");
+		});
+	}));
+
 	await insertCharacterCompendium();
 	console.log("Finished inserting Character compendium.");
-	process.exit(0);
-});
-
+}
 function expandSchool(acronym){
 	switch(acronym){
 		case "A":
@@ -125,6 +148,24 @@ function expandSchool(acronym){
 async function insertCharacterCompendium(){
 	let tasks = [];
 	parseString(fs.readFileSync(compendiums.get("character")), (err, result) => {
+		result.compendium.race.forEach(r => {
+			if(!r.name){
+				throw new Error("Race with no name parsed.");
+			}
+			if(r.trait){
+				r.trait.forEach((t) => {
+					tasks.push(new Trait({
+						name: t.name,
+						race: r.name,
+						text: t.text
+					}).save());
+				});
+				r.trait = r.trait.map(t => t.name[0]);
+				console.log(r.trait);
+			}
+			tasks.push(new Race(r).save());
+		});
+
 		result.compendium.feat.forEach(f => {
 			let feat = {};
 			if(!f.name){
