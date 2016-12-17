@@ -6,7 +6,10 @@ var schema = new mongoose.Schema({
 	speed: String,
 	ability: String,
 	proficiency: String,
-	trait: [String]
+	trait: [{
+		name: String,
+		text: String
+	}]
 });
 
 module.exports = mongoose.model("Race", schema);
