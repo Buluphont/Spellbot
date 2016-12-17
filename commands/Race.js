@@ -8,7 +8,7 @@ module.exports = class Trait extends SearchCommand{
 			name: "race",
 			category: "5e",
 			help: "Searches for a race.",
-			helpArgs: "<Race Name>/<Trait Name>",
+			helpArgs: "<Race Name>",
 			elevation: 0,
 			timeout: 15000
 		});

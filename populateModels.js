@@ -15,6 +15,8 @@ const Class = require("./models/Class");
 const Feature = require("./models/Feature");
 const Feat = require("./models/Feat");
 const Race = require("./models/Race");
+const Background = require("./models/Background");
+
 // DB
 const mongoose = require("mongoose");
 var cr = require("./config.json");
@@ -104,7 +106,17 @@ async function insertEverything(){
 			if(err){
 				reject("Error dropping Race table: " + err);
 			}
-			resolve("races dropped.");
+			resolve("Races dropped.");
+		});
+	}));
+
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping backgrounds.");
+		Race.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Background table: " + err);
+			}
+			resolve("Backgrounds dropped.");
 		});
 	}));
 
@@ -137,6 +149,13 @@ function expandSchool(acronym){
 async function insertCharacterCompendium(){
 	let tasks = [];
 	parseString(fs.readFileSync(compendiums.get("character")), (err, result) => {
+		result.compendium.background.forEach(b => {
+			if(!b.name){
+				throw new Error("Background with no name parsed.");
+			}
+			tasks.push(new Background(b).save());
+		});
+
 		result.compendium.race.forEach(r => {
 			if(!r.name){
 				throw new Error("Race with no name parsed.");
