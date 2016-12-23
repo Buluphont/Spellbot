@@ -1,3 +1,5 @@
+[![Discord](https://discordapp.com/api/guilds/258287716091953153/embed.png)](https://discord.gg/KWsvFGG) [![DavidDep](https://david-dm.org/Buluphont/Spellbot/status.svg?style=flat-square)](https://david-dm.org/Buluphont/Spellbot) [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://github.com/Buluphont/Spellbot/blob/master/LICENSE)
+
 # Spellbot
 A Discord bot leveraging [Discord.js](https://github.com/hydrabolt/discord.js/) to serve up Dungeons & Dragons 5th Edition resources.
 
@@ -15,3 +17,5 @@ Update database with:
 
 Finally,
 `npm start` (or optionally -- and preferably -- use something like `pm2` to run your bot).
+
+
