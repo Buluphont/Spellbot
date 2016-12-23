@@ -16,6 +16,7 @@ const Feature = require("./models/Feature");
 const Feat = require("./models/Feat");
 const Race = require("./models/Race");
 const Background = require("./models/Background");
+const Item = require("./models/Item");
 
 // DB
 const mongoose = require("mongoose");
@@ -29,6 +30,7 @@ const compendiums = new Map();
 compendiums.set("bestiary", "./assets/5e/Bestiary Compendium 2.0.1.xml");
 compendiums.set("spells", "./assets/5e/Spells Compendium 1.2.1.xml");
 compendiums.set("character", "./assets/5e/Character Compendium 2.0.0.xml");
+compendiums.set("item", "./assets/5e/Items Compendium 1.6.0.xml");
 
 db.once("open", async function() {
 	console.log("Connected to db.");
@@ -121,7 +123,134 @@ async function insertEverything(){
 	}));
 
 	await insertCharacterCompendium();
-	console.log("Finished inserting Character compendium.");
+
+	console.log(await new Promise((resolve, reject) => {
+		console.log("Dropping items.");
+		Item.remove({}, function(err) {
+			if(err){
+				reject("Error dropping Item table: " + err);
+			}
+			resolve("Items dropped.");
+		});
+	}));
+
+	await insertItemCompendium();
+}
+
+function expandItemType(type){
+	switch(type){
+		case "$":
+			return "Trade Goods";
+		case "G":
+			return "Adventuring Gear";
+		case "A":
+			return "Ammunition";
+		case "M":
+			return "Melee Weapon";
+		case "R":
+			return "Ranged Weapon";
+		case "LA":
+			return "Light Armour";
+		case "MA":
+			return "Medium Armour";
+		case "HA":
+			return "Heavy Armour";
+		case "S":
+			return "Shield";
+		case "W":
+			return "Wondrous Item";
+		case "P":
+			return "Potion";
+		case "ST":
+			return "Staff";
+		case "RD":
+			return "Rod";
+		case "RG":
+			return "Ring";
+		case "WD":
+			return "Wand";
+		case "SC":
+			return "Scroll";
+		default:
+			console.log(type);
+			console.log(type.length);
+			throw new Error(`Unknown type: ${type}`);
+	}
+}
+
+function expandWeaponProperty(property){
+	switch(property){
+		case "A":
+			return "ammunition";
+		case "LD":
+			return "loading";
+		case "L":
+			return "light";
+		case "F":
+			return "finesse";
+		case "T":
+			return "thrown";
+		case "H":
+			return "heavy";
+		case "R":
+			return "reach";
+		case "2H":
+			return "two-handed";
+		case "V":
+			return "versatile";
+		case "S":
+			return "special";
+		default:
+			throw new Error(`Unknown weapon property: ${property}`);
+	}
+}
+
+function expandDamageType(type){
+	switch(type){
+		case "S":
+			return "slashing";
+		case "B":
+			return "bludgeoning";
+		case "P":
+			return "piercing";
+		default:
+			throw new Error(`Unknown damage type: ${type}`);
+	}
+}
+
+async function insertItemCompendium(){
+	let tasks = [];
+	parseString(fs.readFileSync(compendiums.get("item")), (err, result) => {
+		result.compendium.item.forEach(i => {
+			if(!i.name){
+				throw new Error("Item with no name parsed.");
+			}
+
+			i.text = i.text.join("\n");
+			
+			if(i.type === "LA"){
+				i.ac += " + DEX";
+			}
+			else if(i.type === "MA"){
+				i.ac += " + DEX (max 2)";
+			}
+
+			// The fuck. There's items with blank STR requirements.
+			if(i.strength === " "){
+				delete i.strength;
+			}
+
+			i.type = expandItemType(i.type[0]);
+			if(i.property){
+				i.property = i.property[0].split(",").map(p => expandWeaponProperty(p)).join(", ");
+			}
+			if(i.damageType){
+				i.damageType = expandDamageType(i.damageType[0]);
+			}
+			tasks.push(new Item(i).save());
+		});
+	});
+	return Promise.all(tasks);
 }
 function expandSchool(acronym){
 	switch(acronym){
