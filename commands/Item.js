@@ -70,7 +70,7 @@ module.exports = class Item extends SearchCommand{
 			itemMeta.push(`*Requires ${result.strength} STR*`);
 		}
 
-		if(!result.weight && result.weight !== 0){
+		if(result.weight){
 			itemMeta.push(`*Weight ${result.weight}*`);
 		}
 
