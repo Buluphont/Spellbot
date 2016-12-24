@@ -2,7 +2,7 @@
   "name": "Spellbot",
   "author": "Marisa-chan",
   "license": "MIT",
-  "version": "1.8.4",
+  "version": "1.8.5",
   "description": "A D&D 5e spell fetcher for Discord, running on Discord.js.",
   "main": "sb.js",
   "scripts": {
