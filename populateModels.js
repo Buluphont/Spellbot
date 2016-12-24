@@ -227,7 +227,7 @@ async function insertItemCompendium(){
 			}
 
 			i.text = i.text.join("\n");
-			
+
 			if(i.type === "LA"){
 				i.ac += " + DEX";
 			}
@@ -244,8 +244,8 @@ async function insertItemCompendium(){
 			if(i.property){
 				i.property = i.property[0].split(",").map(p => expandWeaponProperty(p)).join(", ");
 			}
-			if(i.damageType){
-				i.damageType = expandDamageType(i.damageType[0]);
+			if(i.dmgType){
+				i.dmgType = expandDamageType(i.dmgType[0]);
 			}
 			tasks.push(new Item(i).save());
 		});

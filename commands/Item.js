@@ -56,7 +56,7 @@ module.exports = class Item extends SearchCommand{
 		let itemMeta = [];
 		itemMeta.push(`*${result.type}*`);
 		if(result.dmg1){
-			itemMeta.push(`${result.dmg1} ${result.dmgType}${result.property ? " - " + result.property : ""}${result.dmg2 ? " (" + result.dmg2 + ")" : ""}`);
+			itemMeta.push(`*${result.dmg1} ${result.dmgType}${result.property ? " - " + result.property : ""}${result.range ? " (" + result.range + ")" : ""}${result.dmg2 ? " (" + result.dmg2 + ")" : ""}*`);
 		}
 
 		if(result.ac){

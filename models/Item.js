@@ -19,7 +19,8 @@ var schema = new mongoose.Schema({
 	dmg1: String,
 	dmg2: String,
 	dmgType: String,
-	property: String
+	property: String,
+	range: String
 });
 
 module.exports = mongoose.model("Item", schema);
