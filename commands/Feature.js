@@ -66,6 +66,8 @@ module.exports = class Feature extends SearchCommand{
 		else{
 			result = features[0];
 		}
+		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
+											.setColor(0x97ff43);
 		let description;
 		if(result.class.length + result.text.length + result.level.length <= 1995){
 			description = `*${result.class} ${result.level}*\n\n${result.text}`;
@@ -86,9 +88,8 @@ module.exports = class Feature extends SearchCommand{
 			});
 		}
 
-		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
-											.setColor(0x97ff43)
-											.setDescription(description);
+
+		embed = embed.setDescription(description);
 
 		toEdit.edit("", {embed: embed});
 	}
