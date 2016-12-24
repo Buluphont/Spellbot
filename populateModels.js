@@ -114,7 +114,7 @@ async function insertEverything(){
 
 	console.log(await new Promise((resolve, reject) => {
 		console.log("Dropping backgrounds.");
-		Race.remove({}, function(err) {
+		Background.remove({}, function(err) {
 			if(err){
 				reject("Error dropping Background table: " + err);
 			}
