@@ -66,7 +66,7 @@ module.exports = class Item extends SearchCommand{
 		if(result.stealth){
 			itemMeta.push("*Stealth Disadvantage*");
 		}
-		if(result.strength){
+		if(result.strength && result.strength !== " "){
 			itemMeta.push(`*Requires ${result.strength} STR*`);
 		}
 
