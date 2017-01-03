@@ -59,6 +59,9 @@ client.on("error", (error) => {
 });
 
 client.on("message", async (msg) => {
+	if(msg.author.bot){
+		return;
+	}
 	let prefix;
 	if(msg.guild){
 		prefix = await client.fetchPrefix(msg.guild.id);
