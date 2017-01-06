@@ -58,6 +58,21 @@ client.on("error", (error) => {
 	console.log(error);
 });
 
+client.on("guildCreate", (guild) => {
+	let toSend = [
+		`Hi! Thank you for inviting me to ${guild.name}. Here are a few tips to get started.\n`,
+		"My default prefix is `!`. What this means is every command starts with the `!` character; for example, !help or !spell.",
+		"If you'd like to change my prefix for your server, use the `prefix` command. For example:",
+		"!prefix $",
+		"would change the prefix ot `$`, so future commands should be executed like so: $help, $spell, $creature, etc.\n",
+		"Also, in case anything goes awry, you can always execute my commands by mentioning me instead of using a prefix. Examples:",
+		`${client.user} help`,
+		`${client.user} prefix !`,
+		`${client.user} spell dancing lights`
+	];
+	guild.owner.sendMessage(toSend);
+});
+
 client.on("message", async (msg) => {
 	if(msg.author.bot){
 		return;
