@@ -10,6 +10,6 @@ module.exports = class About extends Command{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
-		return msg.reply(`Hi! I'm Spellbot version ${this.client.package.version}.\n\nYou can contact my creator and/or get an invite link for your server here: <https://discord.gg/KWsvFGG>`);
+		return msg.reply(`Hi! I'm Spellbot version ${this.client.package.version}.\n\nYou can contact my creator and/or get an invite link for your server here: https://discord.gg/KWsvFGG`);
 	}
 };
