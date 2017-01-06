@@ -69,6 +69,7 @@ client.on("guildCreate", (guild) => {
 		`${client.user} help`,
 		`${client.user} prefix !`,
 		`${client.user} spell dancing lights\n`,
+		"If you'd like to execute commands here in a DM with me, please don't use a prefix at all.",
 		"If you require more support, please feel free to ask about anything on my help server.",
 		"https://discord.gg/KWsvFGG"
 	];
