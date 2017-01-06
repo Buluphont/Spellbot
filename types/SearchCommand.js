@@ -14,7 +14,7 @@ module.exports = class SearchCommand extends Command{
 			console.log(data[i]);
 			toSend.push(`${i + 1}. ${data[i][identifier]}`);
 		}
-		toEdit = await toEdit.edit(toSend);
+		toEdit = await toEdit.edit(toSend.join("\n"));
 		let filter = (m) => {
 			return m.author.id === querier.id && parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= data.length;
 		};
