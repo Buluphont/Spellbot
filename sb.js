@@ -64,11 +64,13 @@ client.on("guildCreate", (guild) => {
 		"My default prefix is `!`. What this means is every command starts with the `!` character; for example, !help or !spell.",
 		"If you'd like to change my prefix for your server, use the `prefix` command. For example:",
 		"!prefix $",
-		"would change the prefix ot `$`, so future commands should be executed like so: $help, $spell, $creature, etc.\n",
+		"would change the prefix to `$`, so future commands should be executed like so: $help, $spell, $creature, etc.\n",
 		"Also, in case anything goes awry, you can always execute my commands by mentioning me instead of using a prefix. Examples:",
 		`${client.user} help`,
 		`${client.user} prefix !`,
-		`${client.user} spell dancing lights`
+		`${client.user} spell dancing lights\n`,
+		"If you require more support, please feel free to ask about anything on my help server.",
+		"https://discord.gg/KWsvFGG"
 	];
 	guild.owner.sendMessage(toSend);
 });
