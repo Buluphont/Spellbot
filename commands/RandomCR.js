@@ -29,7 +29,7 @@ module.exports = class RandomCR extends Command{
 			if(10 * page + 10 < options.length){
 				toSend.push("Reply with `next` to go forward a page.");
 			}
-			menuMessage  = await menuMessage.edit(toSend);
+			menuMessage  = await menuMessage.edit(toSend.join("\n"));
 			let filter = (m) => {
 				// Listen only for the querier's commands.
 				// Return true if the value is in the content range OR
