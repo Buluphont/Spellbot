@@ -21,12 +21,13 @@ module.exports = class Creature extends SearchCommand{
 					text = text.concat(`${element.attack ? "\n**" + element.attack + "**" : ""}`);
 					let stringBuilder = [];
 
-					while(text.length > 1024){
-						let splitIndex = text.lastIndexOf("\n", 1024);
+					while(text.length > 900){	// TODO: figure out why this doesn't split correctly, factoring in the concat above
+						let splitIndex = text.lastIndexOf("\n", 900);
 						stringBuilder.push(text.substring(0, splitIndex));
 						text = text.substring(splitIndex + 1);
 					}
 					stringBuilder.push(text);
+
 					embed = embed.addField(element.name, stringBuilder.shift());
 					stringBuilder.forEach((string) => {
 						embed = embed.addField(`${element.name}, continued. . .`, `${string}${element.attack ? "\n**" + element.attack + "**" : ""}`);
@@ -191,9 +192,11 @@ module.exports = class Creature extends SearchCommand{
 			embed = embed.addField("Known Spells", result.spells);
 		}
 
+		console.log("Attaching actions");
 		if(result.actions && result.actions.length > 0){
 			embed = this._attachFieldToEmbed("Actions", result.actions, embed);
 		}
+		console.log("donezo actions");
 
 		if(result.legendary && result.legendary.length > 0){
 			embed = this._attachFieldToEmbed("Legendary Actions", result.legendary, embed);
