@@ -192,11 +192,9 @@ module.exports = class Creature extends SearchCommand{
 			embed = embed.addField("Known Spells", result.spells);
 		}
 
-		console.log("Attaching actions");
 		if(result.actions && result.actions.length > 0){
 			embed = this._attachFieldToEmbed("Actions", result.actions, embed);
 		}
-		console.log("donezo actions");
 
 		if(result.legendary && result.legendary.length > 0){
 			embed = this._attachFieldToEmbed("Legendary Actions", result.legendary, embed);
