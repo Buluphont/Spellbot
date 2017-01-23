@@ -137,7 +137,7 @@ module.exports = class Creature extends SearchCommand{
 				result = await super.disambiguate(toEdit, msg.author, "creature", creatures, "name");
 			}
 			catch(err){
-				return toEdit.edit(err);
+				return toEdit.edit(err.toString());
 			}
 		}
 		else{

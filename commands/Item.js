@@ -37,7 +37,7 @@ module.exports = class Item extends SearchCommand{
 				result = await super.disambiguate(toEdit, msg.author, "item", items, "name");
 			}
 			catch(err){
-				return toEdit.edit(err);
+				return toEdit.edit(err.toString());
 			}
 		}
 		else{

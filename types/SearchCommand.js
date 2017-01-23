@@ -11,7 +11,6 @@ module.exports = class SearchCommand extends Command{
 		toSend.push(`Found multiple ${typeName}s; please say the number corresponding to the ${typeName} you meant (maximum 10 results shown).`);
 		toSend.push(`This search will be automatically cancelled in ${this._timeout/1000} seconds.\n`);
 		for(let i = 0; i < data.length && i < 10; i++){
-			console.log(data[i]);
 			toSend.push(`${i + 1}. ${data[i][identifier]}`);
 		}
 		toEdit = await toEdit.edit(toSend.join("\n"));
