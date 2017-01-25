@@ -37,7 +37,7 @@ module.exports = class Feat extends SearchCommand{
 				result = await super.disambiguate(toEdit, msg.author, "feat", feats, "name");
 			}
 			catch(err){
-				return toEdit.edit(err);
+				return toEdit.edit(err.toString());
 			}
 		}
 		else{

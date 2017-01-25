@@ -39,7 +39,7 @@ module.exports = class Background extends SearchCommand{
 				result = await super.disambiguate(toEdit, msg.author, "background", backgrounds, "name");
 			}
 			catch(err){
-				toEdit.edit(err);
+				toEdit.edit(err.toString());
 			}
 		}
 		else{

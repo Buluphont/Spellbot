@@ -44,7 +44,7 @@ module.exports = class Feature extends SearchCommand{
 				resultClass = await super.disambiguate(toEdit, msg.author, "class", classes, "name");
 			}
 			catch(err){
-				toEdit.edit(err);
+				toEdit.edit(err.toString());
 			}
 		}
 		else{
@@ -60,7 +60,7 @@ module.exports = class Feature extends SearchCommand{
 				result = await super.disambiguate(toEdit, msg.author, "feature", features, "name");
 			}
 			catch(err){
-				return toEdit.edit(err);
+				return toEdit.edit(err.toString());
 			}
 		}
 		else{
