@@ -77,19 +77,17 @@ client.on("guildCreate", (guild) => {
 });
 
 client.on("message", async (msg) => {
-	if(msg.author.bot){	// Don't respond to bots
+	if(msg.author.bot){
 		return;
 	}
-
-	let prefix;	// Determine prefix
+	let prefix;
 	if(msg.guild){
 		prefix = await client.fetchPrefix(msg.guild.id);
 	}
 	else{
 		prefix = "";
 	}
-
-	let offset;	// Number of characters to ignore (prefix length)
+	let offset;
 	if(msg.content.startsWith(prefix)){
 		offset = prefix.length;
 	}
@@ -106,7 +104,7 @@ client.on("message", async (msg) => {
 		return;
 	}
 	try{
-		let pattern = new RegExp(`${command.name}([\s\S]*)`, "i");
+		let pattern = new RegExp(`${command.name}(.*)`, "i");
 		let args = pattern.exec(msg.content.substring(offset + commandString))[1].trim();
 		if(args){
 			args = args.split(" ");
