@@ -18,4 +18,5 @@ Update database with:
 Finally,
 `npm start` (or optionally -- and preferably -- use something like `pm2` to run your bot).
 
-
+# Disclaimer
+The contents of the `assets/` directory are NOT mine. They are taken from [some other group's kind, public work.](https://www.dropbox.com/sh/hiavsiegq28xd7u/AABcMGhKcr8CYgeKaHK1ZDzJa?dl=0)
