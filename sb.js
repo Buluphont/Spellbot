@@ -106,8 +106,7 @@ client.on("message", async (msg) => {
 		return;
 	}
 	try{
-		let pattern = new RegExp(`${command.name}([\s\S]*)`, "i");
-		let args = pattern.exec(msg.content.substring(offset + commandString))[1].trim();
+		let args = msg.content.substring(offset + commandString.length).trim();
 		if(args){
 			args = args.split(" ");
 		}
