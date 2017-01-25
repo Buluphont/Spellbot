@@ -30,7 +30,6 @@ module.exports = class Spell extends SearchCommand{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
-		console.log("Entered exec");
 		let prefix;
 		if(msg.guild){
 			prefix = await this.client.fetchPrefix(msg.guild.id);
@@ -49,9 +48,7 @@ module.exports = class Spell extends SearchCommand{
 		let result;
 		if(spells.length > 1){
 			try{
-				console.log("About to enter super");
 				result = await super.disambiguate(toEdit, msg.author, "spell", spells, "name");
-				console.log("Exited super!?");
 			}
 			catch(err){
 				return toEdit.edit(err.toString());
@@ -61,7 +58,6 @@ module.exports = class Spell extends SearchCommand{
 			result = spells[0];
 		}
 
-		console.log(result);
 		let descFieldValues = [];
 		let paragraphs = result.description.trim().split("\n");
 		paragraphs.forEach(p => {

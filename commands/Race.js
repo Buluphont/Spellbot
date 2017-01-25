@@ -62,10 +62,9 @@ module.exports = class Trait extends SearchCommand{
 											.setColor(0x97ff43)
 											.setDescription(description);
 
-		if(result.trait){
-			result.trait.forEach(t => {
-				embed = embed.addField(t.name, t.text);
-			});
+
+		if(result.trait && result.trait.length > 0){
+			embed = super.attachFieldToEmbed("Traits", result.trait, embed);
 		}
 
 		toEdit.edit("", {embed: embed});

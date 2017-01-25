@@ -13,33 +13,6 @@ module.exports = class Creature extends SearchCommand{
 			timeout: 15000
 		});
 
-		this._attachFieldToEmbed = function(name, data, embed){
-			embed = embed.addField("\u200b", `__**${name}**__`);
-			data.forEach((element) => {
-				if(element.text.length + (element.attack ? element.attack.length : 0) > 1024){
-					let text = element.text;
-					text = text.concat(`${element.attack ? "\n**" + element.attack + "**" : ""}`);
-					let stringBuilder = [];
-
-					while(text.length > 900){	// TODO: figure out why this doesn't split correctly, factoring in the concat above
-						let splitIndex = text.lastIndexOf("\n", 900);
-						stringBuilder.push(text.substring(0, splitIndex));
-						text = text.substring(splitIndex + 1);
-					}
-					stringBuilder.push(text);
-
-					embed = embed.addField(element.name, stringBuilder.shift());
-					stringBuilder.forEach((string) => {
-						embed = embed.addField(`${element.name}, continued. . .`, `${string}${element.attack ? "\n**" + element.attack + "**" : ""}`);
-					});
-				}
-				else if(element.text.length + (element.attack ? element.attack.length : 0) > 0){
-					embed = embed.addField(element.name, `${element.text}${element.attack ? "\n**" + element.attack + "**" : ""}`);
-				}
-			});
-			return embed;
-		};
-
 		this._getModifierFor = function(attribute){
 			let modifier = Math.floor(parseInt(attribute) / 2) - 5;
 			if(modifier >= 0){
@@ -49,6 +22,7 @@ module.exports = class Creature extends SearchCommand{
 				return `${modifier}`; // Integer to string conversion
 			}
 		};
+		
 		this._crToExp = function(cr){
 			switch(cr){
 				case "0":
@@ -185,7 +159,7 @@ module.exports = class Creature extends SearchCommand{
 
 		// Attach trait fields
 		if(result.traits && result.traits.length > 0){
-			embed = this._attachFieldToEmbed("Traits", result.traits, embed);
+			embed = super.attachFieldToEmbed("Traits", result.traits, embed);
 		}
 
 		if(result.spells){
@@ -193,11 +167,11 @@ module.exports = class Creature extends SearchCommand{
 		}
 
 		if(result.actions && result.actions.length > 0){
-			embed = this._attachFieldToEmbed("Actions", result.actions, embed);
+			embed = super.attachFieldToEmbed("Actions", result.actions, embed);
 		}
 
 		if(result.legendary && result.legendary.length > 0){
-			embed = this._attachFieldToEmbed("Legendary Actions", result.legendary, embed);
+			embed = super.attachFieldToEmbed("Legendary Actions", result.legendary, embed);
 		}
 
 		return toEdit.edit("", {embed: embed});

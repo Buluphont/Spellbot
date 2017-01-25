@@ -57,4 +57,37 @@ module.exports = class Command{
 				return true;
 		}
 	}
+
+	attachFieldToEmbed(name, data, embed){
+		embed = embed.addField("\u200b", `__**${name}**__`);
+		data.forEach((element) => {
+			element.text = element.text.replace(/,,/g, "\n"); // Make up for someone's shitty data entry
+			if(element.text.length + (element.attack ? element.attack.length + 5 : 0) > 1024){
+				let text = element.text;
+				text = text.concat(`${element.attack ? "\n**" + element.attack + "**" : ""}`);
+				let stringBuilder = [];
+
+				while(text.length > 900){	// TODO: figure out why this doesn't split correctly, factoring in the concat above
+					let splitIndex = text.lastIndexOf("\n", 900);
+					let offset = 0;
+					if(splitIndex === -1){
+						splitIndex = text.lastIndexOf(". ", 900);
+						offset = 1;
+					}
+					stringBuilder.push(text.substring(0, splitIndex + offset));
+					text = text.substring(splitIndex + offset + 1);
+				}
+				stringBuilder.push(text);
+
+				embed = embed.addField(element.name, stringBuilder.shift());
+				stringBuilder.forEach((string) => {
+					embed = embed.addField(`${element.name}, continued. . .`, `${string}${element.attack ? "\n**" + element.attack + "**" : ""}`);
+				});
+			}
+			else if(element.text.length + (element.attack ? element.attack.length : 0) > 0){
+				embed = embed.addField(element.name, `${element.text}${element.attack ? "\n**" + element.attack + "**" : ""}`);
+			}
+		});
+		return embed;
+	}
 };

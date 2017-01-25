@@ -29,7 +29,7 @@ const db = mongoose.connection;
 const compendiums = new Map();
 compendiums.set("bestiary", "./assets/5e/Bestiary Compendium 2.0.1.xml");
 compendiums.set("spells", "./assets/5e/Spells Compendium 1.2.1.xml");
-compendiums.set("character", "./assets/5e/Character Compendium 2.0.0.xml");
+compendiums.set("character", "./assets/5e/Character Compendium 3.0.0.xml");
 compendiums.set("item", "./assets/5e/Items Compendium 1.6.0.xml");
 
 db.once("open", async function() {
