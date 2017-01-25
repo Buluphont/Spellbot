@@ -30,7 +30,6 @@ module.exports = class Spell extends SearchCommand{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
-		console.log("Entered exec");
 		let prefix;
 		if(msg.guild){
 			prefix = await this.client.fetchPrefix(msg.guild.id);
