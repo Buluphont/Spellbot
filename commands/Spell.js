@@ -49,9 +49,7 @@ module.exports = class Spell extends SearchCommand{
 		let result;
 		if(spells.length > 1){
 			try{
-				console.log("About to enter super");
 				result = await super.disambiguate(toEdit, msg.author, "spell", spells, "name");
-				console.log("Exited super!?");
 			}
 			catch(err){
 				return toEdit.edit(err);
@@ -61,7 +59,6 @@ module.exports = class Spell extends SearchCommand{
 			result = spells[0];
 		}
 
-		console.log(result);
 		let descFieldValues = [];
 		let paragraphs = result.description.trim().split("\n");
 		paragraphs.forEach(p => {
