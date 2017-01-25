@@ -22,6 +22,7 @@ module.exports = class Creature extends SearchCommand{
 				return `${modifier}`; // Integer to string conversion
 			}
 		};
+		
 		this._crToExp = function(cr){
 			switch(cr){
 				case "0":
