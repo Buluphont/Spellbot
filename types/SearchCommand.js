@@ -36,8 +36,8 @@ module.exports = class SearchCommand extends Command{
 			return (m.author.id === querier.id &&
 				(
 					(parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= data.length) ||
-					((m.content === "n" || m.content === "next") && 10 * page + 10 < data.length) ||
-					(m.content === "b" || m.content === "back") && 0 < page)
+					((m.content.toLowerCase() === "n" || m.content.toLowerCase() === "next") && 10 * page + 10 < data.length) ||
+					((m.content.toLowerCase() === "b" || m.content.toLowerCase() === "back") && 0 < page))
 			);
 		};
 		try{
@@ -50,10 +50,10 @@ module.exports = class SearchCommand extends Command{
 				toEdit.delete();
 				return data[parseInt(selection.first().content) - 1];
 			}
-			else if(selection.first().content === "next"){
+			else if(selection.first().content.toLowerCase() === "n" || selection.first().content.toLowerCase() === "next"){
 				page = page + 1;
 			}
-			else if(selection.first().content === "back"){
+			else if(selection.first().content.toLowerCase() === "b" || selection.first().content.toLowerCase() === "back"){
 				page = page - 1;
 			}
 			else{
