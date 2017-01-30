@@ -32,16 +32,11 @@ module.exports = class Feat extends SearchCommand{
 		}
 
 		let result;
-		if(feats.length > 1){
-			try{
-				result = await super.disambiguate(toEdit, msg.author, "feat", feats, "name");
-			}
-			catch(err){
-				return toEdit.edit(err.toString());
-			}
+		try{
+			result = await super.disambiguate(toEdit, msg.author, "feat", feats, "name");
 		}
-		else{
-			result = feats[0];
+		catch(err){
+			return toEdit.edit(err.toString());
 		}
 
 		let descriptionBuilder = [];
@@ -53,6 +48,6 @@ module.exports = class Feat extends SearchCommand{
 											.setDescription(descriptionBuilder.join("\n"))
 											.setColor(0x97ff43);
 
-		return toEdit.edit("", {embed: embed});
+		return msg.channel.send("", {embed: embed});
 	}
 };

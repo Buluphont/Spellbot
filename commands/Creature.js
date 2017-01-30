@@ -22,7 +22,7 @@ module.exports = class Creature extends SearchCommand{
 				return `${modifier}`; // Integer to string conversion
 			}
 		};
-		
+
 		this._crToExp = function(cr){
 			switch(cr){
 				case "0":
@@ -106,16 +106,11 @@ module.exports = class Creature extends SearchCommand{
 		}
 
 		let result;
-		if(creatures.length > 1){
-			try{
-				result = await super.disambiguate(toEdit, msg.author, "creature", creatures, "name");
-			}
-			catch(err){
-				return toEdit.edit(err.toString());
-			}
+		try{
+			result = await super.disambiguate(toEdit, msg.author, "creature", creatures, "name");
 		}
-		else{
-			result = creatures[0];
+		catch(err){
+			return toEdit.edit(err.toString());
 		}
 
 		let description = [];
@@ -174,6 +169,6 @@ module.exports = class Creature extends SearchCommand{
 			embed = super.attachFieldToEmbed("Legendary Actions", result.legendary, embed);
 		}
 
-		return toEdit.edit("", {embed: embed});
+		return msg.channel.send("", {embed: embed});
 	}
 };

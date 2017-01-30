@@ -54,18 +54,15 @@ module.exports = class Feature extends SearchCommand{
 		if(!features || features.length === 0){
 			return toEdit.edit("Unable to find that feature. Sorry!");
 		}
+		
 		let result;
-		if(features.length > 1){
-			try{
-				result = await super.disambiguate(toEdit, msg.author, "feature", features, "name");
-			}
-			catch(err){
-				return toEdit.edit(err.toString());
-			}
+		try{
+			result = await super.disambiguate(toEdit, msg.author, "feature", features, "name");
 		}
-		else{
-			result = features[0];
+		catch(err){
+			return toEdit.edit(err.toString());
 		}
+
 		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
 											.setColor(0x97ff43);
 		let description;
@@ -91,6 +88,6 @@ module.exports = class Feature extends SearchCommand{
 
 		embed = embed.setDescription(description);
 
-		toEdit.edit("", {embed: embed});
+		return msg.channel.send("", {embed: embed});
 	}
 };

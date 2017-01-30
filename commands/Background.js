@@ -34,16 +34,11 @@ module.exports = class Background extends SearchCommand{
 		}
 
 		let result;
-		if(backgrounds.length > 1){
-			try{
-				result = await super.disambiguate(toEdit, msg.author, "background", backgrounds, "name");
-			}
-			catch(err){
-				toEdit.edit(err.toString());
-			}
+		try{
+			result = await super.disambiguate(toEdit, msg.author, "background", backgrounds, "name");
 		}
-		else{
-			result = backgrounds[0];
+		catch(err){
+			toEdit.edit(err.toString());
 		}
 
 		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
@@ -55,6 +50,6 @@ module.exports = class Background extends SearchCommand{
 			});
 		}
 
-		toEdit.edit("", {embed: embed});
+		return msg.channel.send("", {embed: embed});
 	}
 };

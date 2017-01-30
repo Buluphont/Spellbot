@@ -1,76 +1,16 @@
-const Command = require("../types/Command");
+const SearchCommand = require("../types/SearchCommand");
 const CreatureModel = require("../models/Creature");
 const Discord = require("discord.js");
-const TIMEOUT = 15000;
-module.exports = class RandomCR extends Command{
+module.exports = class RandomCR extends SearchCommand{
 	constructor(client){
 		super(client, {
 			name: "randomcr",
 			help: "Fetches random creatures by CR.",
 			category: "5e",
 			helpArgs: "<Challenge Rating>",
-			elevation: 0
+			elevation: 0,
+			timeout: 15000
 		});
-
-		this._menuLoop = async function(options, menuMessage, querier, page = 0){
-			let toSend = [];
-			toSend.push("Please say the number corresponding to the creature you meant.");
-			toSend.push(`This search will be automatically cancelled in ${TIMEOUT/1000} seconds.\n`);
-			for(let i = 10 * page; i < options.length && i < (10 * page) + 10; i++){
-				toSend.push(`${i + 1}. ${options[i].name}`);
-			}
-
-			if(0 < page || 10 * page + 10 < options.length){
-				toSend.push("");
-			}
-			if(0 < page){
-				toSend.push("Reply with `back` to go back a page.");
-			}
-			if(10 * page + 10 < options.length){
-				toSend.push("Reply with `next` to go forward a page.");
-			}
-			menuMessage  = await menuMessage.edit(toSend.join("\n"));
-			let filter = (m) => {
-				// Listen only for the querier's commands.
-				// Return true if the value is in the content range OR
-				// (the content is "next" AND there is a next page) OR
-				// (the content is "back" AND this is not the 0th page)
-				return (m.author.id === querier.id &&
-					(
-						(parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= options.length) ||
-						(m.content === "next" && 10 * page + 10 < options.length) ||
-						m.content === "back" && 0 < page)
-				);
-			};
-			try{
-				let selection = await menuMessage.channel.awaitMessages(filter, {
-					time: TIMEOUT,
-					maxMatches: 1
-				});
-
-				if(parseInt(selection.first().content)){
-					menuMessage.delete();
-					return options[parseInt(selection.first().content) - 1];
-				}
-				else if(selection.first().content === "next"){
-					page = page + 1;
-				}
-				else if(selection.first().content === "back"){
-					page = page - 1;
-				}
-				else{
-					throw new Error("A strange error has occurred. Please contact my creator!");
-				}
-
-				let nextMenu = await menuMessage.channel.sendMessage("Fetching next page. . .");
-				menuMessage.delete();
-				return this._menuLoop(options, nextMenu, querier, page);
-			}
-			catch(err){
-				menuMessage.delete();
-				throw new Error("Query cancelled.");
-			}
-		};
 
 		this._getModifierFor = function(attribute){
 			let modifier = Math.floor(parseInt(attribute) / 2) - 5;
@@ -171,7 +111,7 @@ module.exports = class RandomCR extends Command{
 					let j = Math.floor(Math.random() * i);
 					[creatures[i - 1], creatures[j]] = [creatures[j], creatures[i - 1]];
 				}
-				result = await this._menuLoop(creatures, toEdit, msg.author);
+				result = await super.disambiguate(toEdit, msg.author, "creature", creatures, "name");
 			}
 			catch(err){
 				return msg.channel.sendMessage(err.message);
@@ -237,6 +177,6 @@ module.exports = class RandomCR extends Command{
 			embed = super.attachFieldToEmbed("Legendary Actions", result.legendary, embed);
 		}
 
-		return msg.channel.sendEmbed(embed);
+		return msg.channel.send("", {embed: embed});
 	}
 };

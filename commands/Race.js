@@ -34,16 +34,11 @@ module.exports = class Trait extends SearchCommand{
 		}
 
 		let result;
-		if(races.length > 1){
-			try{
-				result = await super.disambiguate(toEdit, msg.author, "race", races, "name");
-			}
-			catch(err){
-				toEdit.edit(err.toString());
-			}
+		try{
+			result = await super.disambiguate(toEdit, msg.author, "race", races, "name");
 		}
-		else{
-			result = races[0];
+		catch(err){
+			toEdit.edit(err.toString());
 		}
 
 		let descriptionBuilder = [];
@@ -67,6 +62,6 @@ module.exports = class Trait extends SearchCommand{
 			embed = super.attachFieldToEmbed("Traits", result.trait, embed);
 		}
 
-		toEdit.edit("", {embed: embed});
+		return msg.channel.send("", {embed: embed});
 	}
 };

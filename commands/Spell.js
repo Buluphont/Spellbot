@@ -45,17 +45,13 @@ module.exports = class Spell extends SearchCommand{
 		if(!spells || spells.length === 0){
 			return toEdit.edit("Unable to find your spell. Sorry!");
 		}
+
 		let result;
-		if(spells.length > 1){
-			try{
-				result = await super.disambiguate(toEdit, msg.author, "spell", spells, "name");
-			}
-			catch(err){
-				return toEdit.edit(err.toString());
-			}
+		try{
+			result = await super.disambiguate(toEdit, msg.author, "spell", spells, "name");
 		}
-		else{
-			result = spells[0];
+		catch(err){
+			return toEdit.edit(err.toString());
 		}
 
 		let descFieldValues = [];
@@ -65,7 +61,6 @@ module.exports = class Spell extends SearchCommand{
 				descFieldValues.push(p);
 			}
 		});
-
 		let spellMeta = [];
 		let type = `*${this._ordinal_suffix_of(result.level)}-level ${result.school}${result.ritual ? " (ritual)" : ""}*\n`;
 		spellMeta.push(type);
@@ -86,6 +81,6 @@ module.exports = class Spell extends SearchCommand{
 			}
 		});
 
-		return toEdit.edit("", {embed: embed});
+		return msg.channel.send("", {embed: embed});
 	}
 };

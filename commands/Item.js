@@ -31,16 +31,11 @@ module.exports = class Item extends SearchCommand{
 			return toEdit.edit("Unable to find your item. Sorry!");
 		}
 		let result;
-		if(items.length > 1){
-			try{
-				result = await super.disambiguate(toEdit, msg.author, "item", items, "name");
-			}
-			catch(err){
-				return toEdit.edit(err.toString());
-			}
+		try{
+			result = await super.disambiguate(toEdit, msg.author, "item", items, "name");
 		}
-		else{
-			result = items[0];
+		catch(err){
+			return toEdit.edit(err.toString());
 		}
 
 		let text = result.text;
@@ -86,6 +81,6 @@ module.exports = class Item extends SearchCommand{
 			embed = embed.addField("\u200b", string);
 		});
 
-		return toEdit.edit("", {embed: embed});
+		return msg.channel.send("", {embed: embed});
 	}
 };
