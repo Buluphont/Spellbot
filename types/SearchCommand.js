@@ -36,8 +36,8 @@ module.exports = class SearchCommand extends Command{
 			return (m.author.id === querier.id &&
 				(
 					(parseInt(m.content) && 0 < parseInt(m.content) && parseInt(m.content) <= data.length) ||
-					(m.content === "next" && 10 * page + 10 < data.length) ||
-					m.content === "back" && 0 < page)
+					((m.content === "n" || m.content === "next") && 10 * page + 10 < data.length) ||
+					(m.content === "b" || m.content === "back") && 0 < page)
 			);
 		};
 		try{
