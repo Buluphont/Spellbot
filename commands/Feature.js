@@ -54,13 +54,13 @@ module.exports = class Feature extends SearchCommand{
 		if(!features || features.length === 0){
 			return toEdit.edit("Unable to find that feature. Sorry!");
 		}
-		
+
 		let result;
 		try{
 			result = await super.disambiguate(toEdit, msg.author, "feature", features, "name");
 		}
 		catch(err){
-			return toEdit.edit(err.toString());
+			return err.toEdit.edit(err.toString());
 		}
 
 		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)

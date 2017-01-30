@@ -38,7 +38,7 @@ module.exports = class Trait extends SearchCommand{
 			result = await super.disambiguate(toEdit, msg.author, "race", races, "name");
 		}
 		catch(err){
-			toEdit.edit(err.toString());
+			return err.toEdit.edit(err.toString());
 		}
 
 		let descriptionBuilder = [];

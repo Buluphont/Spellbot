@@ -114,7 +114,7 @@ module.exports = class RandomCR extends SearchCommand{
 				result = await super.disambiguate(toEdit, msg.author, "creature", creatures, "name");
 			}
 			catch(err){
-				return msg.channel.sendMessage(err.message);
+				return err.toEdit.edit(err.toString());
 			}
 		}
 		else{

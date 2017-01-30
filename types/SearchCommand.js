@@ -57,15 +57,18 @@ module.exports = class SearchCommand extends Command{
 				page = page - 1;
 			}
 			else{
-				throw new Error("A strange error has occurred. Please contact my creator!");
+				let e = new Error("A strange error has occurred. Please contact my creator!");
+				e.toEdit = toEdit;
+				throw e;
 			}
 			let nextMenu = await toEdit.channel.sendMessage("Fetching next page. . .");
 			toEdit.delete();
 			return this.disambiguate(nextMenu, querier, typeName, data, identifier, page);
 		}
 		catch(err){
-			toEdit.delete();
-			throw new Error("Query cancelled.");
+			let e = new Error("Query cancelled.");
+			e.toEdit = toEdit;
+			throw e;
 		}
 	}
 };

@@ -38,7 +38,7 @@ module.exports = class Background extends SearchCommand{
 			result = await super.disambiguate(toEdit, msg.author, "background", backgrounds, "name");
 		}
 		catch(err){
-			toEdit.edit(err.toString());
+			return err.toEdit.edit(err.toString());
 		}
 
 		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
