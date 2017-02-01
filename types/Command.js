@@ -79,13 +79,13 @@ module.exports = class Command{
 				}
 				stringBuilder.push(text);
 
-				embed = embed.addField(element.name, stringBuilder.shift());
+				embed = embed.addField(element.name ? element.name : "\u200b", stringBuilder.shift());
 				stringBuilder.forEach((string) => {
 					embed = embed.addField(`${element.name}, continued. . .`, `${string}${element.attack ? "\n**" + element.attack + "**" : ""}`);
 				});
 			}
 			else if(element.text.length + (element.attack ? element.attack.length : 0) > 0){
-				embed = embed.addField(element.name, `${element.text}${element.attack ? "\n**" + element.attack + "**" : ""}`);
+				embed = embed.addField(element.name ? element.name : "\u200b", `${element.text}${element.attack ? "\n**" + element.attack + "**" : ""}`);
 			}
 		});
 		return embed;
