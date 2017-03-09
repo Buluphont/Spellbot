@@ -3,6 +3,9 @@
 # Spellbot
 A Discord bot leveraging [Discord.js](https://github.com/hydrabolt/discord.js/) to serve up Dungeons & Dragons 5th Edition resources.
 
+
+To invite Spellbot to your server, simply use this link:
+https://discordapp.com/api/oauth2/authorize?client_id=258286747723497473&scope=bot&permissions=0
 # Installation
 Requires Node.js >= 7.0.0 (makes use of async/await, so `--harmony` flag is required)
 
