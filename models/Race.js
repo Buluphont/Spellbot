@@ -9,7 +9,8 @@ var schema = new mongoose.Schema({
 	trait: [{
 		name: String,
 		text: String
-	}]
+	}],
+	source: String
 });
 
 module.exports = mongoose.model("Race", schema);

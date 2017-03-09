@@ -50,7 +50,9 @@ module.exports = class Trait extends SearchCommand{
 		if(result.proficiency){
 			descriptionBuilder.push(`**Proficiencies** ${result.proficiency}`);
 		}
-
+		if(result.source){
+			descriptionBuilder.push(`**Source** ${result.source}`);
+		}
 		let description = descriptionBuilder.join("\n");
 
 		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
