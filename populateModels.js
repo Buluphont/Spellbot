@@ -217,8 +217,14 @@ function expandItemType(type){
 			return "Tool";
 		case "EXP":
 			return "Explosive";
+		case "VEH":
+			return "Vehicle";
+		case "TAH":
+			return "Tack and Harness";
 		case "MNT":
 			return "Mount";
+		case "TG":
+			return "Trade Good";
 		default:
 			console.log(type);
 			console.log(type.length);
@@ -276,6 +282,7 @@ function expandDamageType(type){
 
 async function insertBestiary(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/bestiary.json");
+	console.log("1");
 	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
 	result.compendium.monster.forEach(m => {
@@ -415,6 +422,7 @@ async function insertBestiary(){
 
 async function insertSpells(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/spells.json");
+	console.log("2");
 	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
 	result.compendium.spell.forEach(s => {
@@ -450,6 +458,8 @@ async function insertSpells(){
 
 async function insertClasses(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/classes.json");
+	console.log("3");
+
 	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
 
@@ -497,6 +507,8 @@ async function insertClasses(){
 
 async function insertFeats(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/feats.json");
+	console.log("4");
+
 	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
 
@@ -520,6 +532,8 @@ async function insertFeats(){
 
 async function insertRaces(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/races.json");
+	console.log("5");
+
 	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
 
@@ -534,6 +548,8 @@ async function insertRaces(){
 
 async function insertBackgrounds(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/backgrounds.json");
+	console.log("6");
+
 	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
 
@@ -548,6 +564,8 @@ async function insertBackgrounds(){
 
 async function insertItems(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/items.json");
+	console.log("7");
+
 	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
 
