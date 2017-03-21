@@ -217,6 +217,8 @@ function expandItemType(type){
 			return "Tool";
 		case "EXP":
 			return "Explosive";
+		case "MNT":
+			return "Mount";
 		default:
 			console.log(type);
 			console.log(type.length);
