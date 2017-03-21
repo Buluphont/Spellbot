@@ -16,7 +16,6 @@ module.exports = class Feature extends SearchCommand{
 	}
 
 	async execute(msg, args){	// eslint-disable-line no-unused-vars
-		return msg.reply("Sorry, this command is *temporarily* unavailable. Will hopefully have it straightened out by the end of the day (21 Mar 2017).\nFor support or more information, contact my creator via DM (Best 2hu#0550) or my development server (try my `about` command).");
 		let prefix;
 		if(msg.guild){
 			prefix = await this.client.fetchPrefix(msg.guild.id);
