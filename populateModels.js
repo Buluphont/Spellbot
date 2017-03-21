@@ -282,8 +282,14 @@ function expandDamageType(type){
 
 async function insertBestiary(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/bestiary.json");
-	console.log("1");
-	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	let result;
+	try{
+		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	}
+	catch(err){
+		console.log(`Invalid JSON in bestiary.\n${err}`);
+	}
+
 	let tasks = [];
 	result.compendium.monster.forEach(m => {
 		let monster = {};
@@ -422,8 +428,14 @@ async function insertBestiary(){
 
 async function insertSpells(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/spells.json");
-	console.log("2");
-	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	let result;
+	try{
+		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	}
+	catch(err){
+		console.log(`Invalid JSON in spells.\n${err}`);
+	}
+
 	let tasks = [];
 	result.compendium.spell.forEach(s => {
 		let spell = {};
@@ -458,11 +470,15 @@ async function insertSpells(){
 
 async function insertClasses(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/classes.json");
-	console.log("3");
+	let result;
+	try{
+		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	}
+	catch(err){
+		console.log(`Invalid JSON in classes.\n${err}`);
+	}
 
-	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
-
 	result.compendium.class.forEach(c => {
 		let characterClass = {};
 		if(!c.name){
@@ -507,9 +523,13 @@ async function insertClasses(){
 
 async function insertFeats(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/feats.json");
-	console.log("4");
-
-	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	let result;
+	try{
+		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	}
+	catch(err){
+		console.log(`Invalid JSON in feats.\n${err}`);
+	}
 	let tasks = [];
 
 	result.compendium.feat.forEach(f => {
@@ -532,11 +552,15 @@ async function insertFeats(){
 
 async function insertRaces(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/races.json");
-	console.log("5");
+	let result;
+	try{
+		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	}
+	catch(err){
+		console.log(`Invalid JSON in races.\n${err}`);
+	}
 
-	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
-
 	result.compendium.race.forEach(r => {
 		if(!r.name){
 			throw new Error("Race with no name parsed.");
@@ -548,11 +572,15 @@ async function insertRaces(){
 
 async function insertBackgrounds(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/backgrounds.json");
-	console.log("6");
+	let result;
+	try{
+		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	}
+	catch(err){
+		console.log(`Invalid JSON in backgrounds.\n${err}`);
+	}
 
-	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
-
 	result.compendium.background.forEach(b => {
 		if(!b.name){
 			throw new Error("Background with no name parsed.");
@@ -564,11 +592,15 @@ async function insertBackgrounds(){
 
 async function insertItems(){
 	let response = await request("https://5egmegaanon.github.io/5etools/data/items.json");
-	console.log("7");
+	let result;
+	try{
+		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
+	}
+	catch(err){
+		console.log(`Invalid JSON in items.\n${err}`);
+	}
 
-	let result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
 	let tasks = [];
-
 	result.compendium.item.forEach(i => {
 		if(!i.name){
 			throw new Error("Item with no name parsed.");
