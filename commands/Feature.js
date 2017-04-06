@@ -57,7 +57,7 @@ module.exports = class Feature extends SearchCommand{
 
 		let result;
 		try{
-			result = await super.disambiguate(toEdit, msg.author, "feature", features, "name");
+			result = await super.disambiguate(await msg.channel.send("Fetching features. . ."), msg.author, "feature", features, "name");
 		}
 		catch(err){
 			return err.toEdit.edit(err.toString());
