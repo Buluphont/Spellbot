@@ -32,7 +32,7 @@ module.exports = class Item extends SearchCommand{
 		}
 		let result;
 		try{
-			result = await super.disambiguate(toEdit, msg.author, "item", items, "name");
+			result = await super.disambiguate(toEdit, msg.author, "item", items, "name", 0, "rarity");
 		}
 		catch(err){
 			return err.toEdit.edit(err.toString());

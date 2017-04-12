@@ -6,7 +6,7 @@ module.exports = class SearchCommand extends Command{
 		this._timeout = meta.timeout || 15000;
 	}
 
-	async disambiguate(toEdit, querier, typeName, data, identifier, page = 0){
+	async disambiguate(toEdit, querier, typeName, data, identifier, page = 0, extraIdentifier = ""){
 		let toSend = [];
 		if(data.length === 1){
 			toEdit.delete();
@@ -15,7 +15,7 @@ module.exports = class SearchCommand extends Command{
 		toSend.push(`Please say the number corresponding to the ${typeName} you meant.`);
 		toSend.push(`This search will be automatically cancelled in ${this._timeout/1000} seconds.\n`);
 		for(let i = 10 * page; i < data.length && i < (10 * page) + 10; i++){
-			toSend.push(`${i + 1}. ${data[i][identifier]}`);
+			toSend.push(`${i + 1}. ${data[i][identifier]}${data[i][extraIdentifier] ? " (" + data[i][extraIdentifier] + ")" : ""}`);
 		}
 
 		if(0 < page || 10 * page + 10 < data.length){
@@ -63,7 +63,7 @@ module.exports = class SearchCommand extends Command{
 			}
 			let nextMenu = await toEdit.channel.sendMessage("Fetching next page. . .");
 			toEdit.delete();
-			return this.disambiguate(nextMenu, querier, typeName, data, identifier, page);
+			return this.disambiguate(nextMenu, querier, typeName, data, identifier, page, extraIdentifier);
 		}
 		catch(err){
 			let e = new Error("Query cancelled.");

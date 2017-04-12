@@ -107,7 +107,7 @@ module.exports = class Creature extends SearchCommand{
 
 		let result;
 		try{
-			result = await super.disambiguate(toEdit, msg.author, "creature", creatures, "name");
+			result = await super.disambiguate(toEdit, msg.author, "creature", creatures, "name", 0, "cr");
 		}
 		catch(err){
 			return err.toEdit.edit(err.toString());
