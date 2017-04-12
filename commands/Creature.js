@@ -130,6 +130,9 @@ module.exports = class Creature extends SearchCommand{
 		if(result.skill){
 			description.push(`**Skills** ${result.skill}\n`);
 		}
+		if(result.resist){
+			description.push(`**Damage Resistances** ${result.resist}`);
+		}
 		if(result.vulnerable){
 			description.push(`**Damage Vulnerabilities** ${result.vulnerable}`);
 		}

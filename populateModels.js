@@ -17,6 +17,8 @@ mongoose.Promise = global.Promise;
 mongoose.connect(cr.db_endpoint);
 const db = mongoose.connection;
 
+const BASE_URL = "https://astranauta.github.io";
+
 db.once("open", async function() {
 	console.log("Connected to db.");
 	insertEverything();
@@ -281,7 +283,7 @@ function expandDamageType(type){
 }
 
 async function insertBestiary(){
-	let response = await request("https://5egmegaanon.github.io/5etools/data/bestiary.json");
+	let response = await request(`${BASE_URL}/data/bestiary.json`);
 	let result;
 	try{
 		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
@@ -427,7 +429,7 @@ async function insertBestiary(){
 }
 
 async function insertSpells(){
-	let response = await request("https://5egmegaanon.github.io/5etools/data/spells.json");
+	let response = await request(`${BASE_URL}/data/spells.json`);
 	let result;
 	try{
 		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
@@ -469,7 +471,7 @@ async function insertSpells(){
 }
 
 async function insertClasses(){
-	let response = await request("https://5egmegaanon.github.io/5etools/data/classes.json");
+	let response = await request(`${BASE_URL}/data/classes.json`);
 	let result;
 	try{
 		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
@@ -522,7 +524,7 @@ async function insertClasses(){
 }
 
 async function insertFeats(){
-	let response = await request("https://5egmegaanon.github.io/5etools/data/feats.json");
+	let response = await request(`${BASE_URL}/data/feats.json`);
 	let result;
 	try{
 		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
@@ -551,7 +553,7 @@ async function insertFeats(){
 }
 
 async function insertRaces(){
-	let response = await request("https://5egmegaanon.github.io/5etools/data/races.json");
+	let response = await request(`${BASE_URL}/data/races.json`);
 	let result;
 	try{
 		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
@@ -571,7 +573,7 @@ async function insertRaces(){
 }
 
 async function insertBackgrounds(){
-	let response = await request("https://5egmegaanon.github.io/5etools/data/backgrounds.json");
+	let response = await request(`${BASE_URL}/data/backgrounds.json`);
 	let result;
 	try{
 		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
@@ -591,7 +593,7 @@ async function insertBackgrounds(){
 }
 
 async function insertItems(){
-	let response = await request("https://5egmegaanon.github.io/5etools/data/items.json");
+	let response = await request(`${BASE_URL}/data/items.json`);
 	let result;
 	try{
 		result = JSON.parse(response.match(/.*({[\w\W]*)/)[1]);
