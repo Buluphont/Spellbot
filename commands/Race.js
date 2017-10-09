@@ -45,7 +45,60 @@ module.exports = class Trait extends SearchCommand{
 		descriptionBuilder.push(`**Size** ${result.size}`);
 		descriptionBuilder.push(`**Speed** ${result.speed}`);
 		if(result.ability){
-			descriptionBuilder.push(`**Ability Score Adjustments** ${result.ability}`);
+			let adjustmentsText = "**Ability Score Adjustments** ";
+			let hasStaticModifiers = false;
+
+			if(result.ability.str){
+				adjustmentsText += `Str: ${result.ability.str}, `;
+				hasStaticModifiers = true;
+			}
+
+			if(result.ability.dex){
+				adjustmentsText += `Dex: ${result.ability.dex}, `;
+				hasStaticModifiers = true;
+			}
+
+			if(result.ability.con){
+				adjustmentsText += `Con: ${result.ability.con}, `;
+				hasStaticModifiers = true;
+			}
+
+			if(result.ability.int){
+				adjustmentsText += `Int: ${result.ability.int}, `;
+				hasStaticModifiers = true;
+			}
+
+			if(result.ability.wis){
+				adjustmentsText += `Wis: ${result.ability.wis}, `;
+				hasStaticModifiers = true;
+			}
+
+			if(result.ability.cha){
+				adjustmentsText += `Cha: ${result.ability.cha}, `;
+				hasStaticModifiers = true;
+			}
+
+			if(hasStaticModifiers){
+				// Remove the trailing comma and space after the last element
+				adjustmentsText = adjustmentsText.substring(0, adjustmentsText.length - 2);
+			}
+
+			if(result.ability.choose){
+				result.ability.choose.forEach(decision => {
+					let count = decision.count;
+					let amount = decision.amount;
+
+					adjustmentsText += `\n+${amount ? amount : "1"} to any ${count} from `;
+
+					decision.from.forEach(choice => {
+						adjustmentsText += `${choice}, `;
+					});
+
+					adjustmentsText = adjustmentsText.substring(0, adjustmentsText.length - 2);
+				});
+			}
+			
+			descriptionBuilder.push(adjustmentsText);
 		}
 		if(result.proficiency){
 			descriptionBuilder.push(`**Proficiencies** ${result.proficiency}`);

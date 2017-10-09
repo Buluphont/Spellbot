@@ -137,7 +137,7 @@ async function insertEverything(){
 			}
 			console.log("Items dropped.");
 			try{
-				insertItems().then(resolve("Finished inserting classes."));
+				insertItems().then(resolve("Finished inserting items."));
 			}
 			catch(e){
 				reject(e);
@@ -491,9 +491,11 @@ async function insertClasses(){
 		if(c.proficiency){
 			characterClass.proficiency = c.proficiency;
 		}
+
 		if(c.spellAbility){
 			characterClass.spellAbility = c.spellAbility;
 		}
+
 		characterClass.levels = [];
 
 		c.autolevel.forEach(l => {

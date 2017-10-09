@@ -153,7 +153,7 @@ module.exports = class Creature extends SearchCommand{
 
 		let embed = new Discord.RichEmbed().setTitle(`__**${result.name}**__`)
 											.setColor(0x97ff43)
-											.setDescription(description.join("\n"));
+											.setDescription(description.join("\n")); 
 
 		// Attach trait fields
 		if(result.traits && result.traits.length > 0){
